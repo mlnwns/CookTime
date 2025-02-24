@@ -22,6 +22,8 @@ const initialMockData = [
         seconds: '30',
       },
     ],
+    createdAt: Date.now() - 30000, // 30초 전
+    type: 'timer',
   },
   {
     id: 2,
@@ -46,6 +48,8 @@ const initialMockData = [
         seconds: '0',
       },
     ],
+    createdAt: Date.now() - 20000, // 20초 전
+    type: 'timer',
   },
   {
     id: 3,
@@ -63,6 +67,8 @@ const initialMockData = [
         seconds: 30,
       },
     ],
+    createdAt: Date.now() - 10000,
+    type: 'timer',
   },
 ];
 

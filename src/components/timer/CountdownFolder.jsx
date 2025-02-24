@@ -13,7 +13,7 @@ const getLighterColor = color => {
   return '#FCC4C4';
 };
 
-const CountdownFolder = ({folder}) => {
+const CountdownFolder = ({folder, onFolderClick}) => {
   const navigation = useNavigation();
   const icon = folder?.icon || '🍔';
   const folderName = folder?.folderName || '쉬림프 타코';
@@ -21,6 +21,12 @@ const CountdownFolder = ({folder}) => {
   const lighterColor = getLighterColor(folderColor);
 
   const handlePress = () => {
+    if (onFolderClick) {
+      setTimeout(() => {
+        onFolderClick(folder);
+      }, 1000);
+    }
+
     navigation.navigate('FolderPage', {folder});
   };
 
