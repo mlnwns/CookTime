@@ -20,7 +20,8 @@ const MainPage = () => {
     try {
       const storedTimers = await AppDataStorage.load('timers');
       if (storedTimers) {
-        setTimers(storedTimers);
+        const standaloneTimers = storedTimers.filter(timer => !timer.folderId);
+        setTimers(standaloneTimers);
       }
 
       const storedFolders = await AppDataStorage.load('folders');

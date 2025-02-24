@@ -1,4 +1,5 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
+import {useFocusEffect} from '@react-navigation/native';
 import styled from 'styled-components/native';
 import {scale} from 'react-native-size-matters';
 import {ScrollView} from 'react-native';
@@ -13,27 +14,27 @@ const FolderPage = () => {
   const {folder} = route.params || {};
   const [timers, setTimers] = useState([]);
 
-  useEffect(() => {
-    // 폴더에 속한 타이머 로드
-    const loadFolderTimers = async () => {
-      try {
-        const storedTimers = await AppDataStorage.load('timers');
-        if (storedTimers) {
-          // 이 폴더에 속한 타이머만 필터링
-          const folderTimers = storedTimers.filter(
-            timer => timer.folderId === folder.id,
-          );
-          setTimers(folderTimers);
+  useFocusEffect(
+    React.useCallback(() => {
+      const loadFolderTimers = async () => {
+        try {
+          const storedTimers = await AppDataStorage.load('timers');
+          if (storedTimers) {
+            const folderTimers = storedTimers.filter(
+              timer => timer.folderId === folder.id,
+            );
+            setTimers(folderTimers);
+          }
+        } catch (error) {
+          console.error('타이머 로드 실패:', error);
         }
-      } catch (error) {
-        console.error('타이머 로드 실패:', error);
-      }
-    };
+      };
 
-    if (folder) {
-      loadFolderTimers();
-    }
-  }, [folder]);
+      if (folder) {
+        loadFolderTimers();
+      }
+    }, [folder]),
+  );
 
   const handleTimerClick = async clickedTimer => {
     try {

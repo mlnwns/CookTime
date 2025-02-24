@@ -30,6 +30,7 @@ const TimerCreatePage = () => {
   const navigation = useNavigation();
   const [totalMinutes, setTotalMinutes] = useState('00');
   const [totalSeconds, setTotalSeconds] = useState('00');
+  const folderId = route.params?.folderId;
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
@@ -155,7 +156,7 @@ const TimerCreatePage = () => {
         timerColor: timerColor,
         icon: selectedIcon,
         detailTimerData: detailTimers,
-        folderId: route.params?.folderId, // 현재 폴더 ID 추가
+        folderId: folderId, // 폴더 ID 추가
         createdAt: Date.now(), // 생성 시간 추가
       };
 
