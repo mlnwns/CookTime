@@ -1,5 +1,3 @@
-// MainPage.js
-
 import styled from 'styled-components/native';
 import React, {useState, useEffect} from 'react';
 import {scale} from 'react-native-size-matters';

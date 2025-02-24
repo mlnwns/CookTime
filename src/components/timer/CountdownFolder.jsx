@@ -86,9 +86,8 @@ const BottomSectionWrapper = styled.View`
 const IconboxWrapper = styled.View`
   width: ${scale(40)}px;
   height: ${scale(38.5)}px;
-  background-color: #ffffff;
   border-radius: ${scale(13)}px;
-  opacity: 0.7;
+  background-color: rgba(255, 255, 255, 0.7);
   justify-content: center;
   align-items: center;
 `;
