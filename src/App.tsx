@@ -13,11 +13,16 @@ import {StatusBar} from 'react-native';
 import TimerUpdatePage from './pages/TimerUpdatePage';
 import Refresh from './pages/Refresh';
 import Login from './pages/Login';
-import { GestureHandlerRootView} from 'react-native-gesture-handler';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import {useAppStateMonitor} from './hooks/useAppStateMonitor';
+import {useBackgroundTask} from './hooks/useBackgroundTask';
 
 const Stack = createNativeStackNavigator();
 
 function App(): React.JSX.Element {
+  useAppStateMonitor();
+  useBackgroundTask();
+
   return (
     <>
       <StatusBar
@@ -25,66 +30,66 @@ function App(): React.JSX.Element {
         backgroundColor="transparent" // 상태 표시줄 배경색 투명하게 설정
         translucent={true} // 상태 표시줄을 투명하게 설정
       />
-      <GestureHandlerRootView style={{flex:1}}>
-      <NavigationContainer>
-        <Stack.Navigator
-          screenOptions={{
-            headerShown: false,
-          }}>
-          <Stack.Group
+      <GestureHandlerRootView style={{flex: 1}}>
+        <NavigationContainer>
+          <Stack.Navigator
             screenOptions={{
-              contentStyle: {backgroundColor: '#fff'},
+              headerShown: false,
             }}>
-            <Stack.Screen
-              name="Main"
-              component={MainWithLayout}
-              options={{title: 'Main Page', animation: 'none'}}
-            />
-            <Stack.Screen
-              name="Detail"
-              component={DetailWithLayout}
-              options={{title: 'Detail Page'}}
-            />
-            <Stack.Screen
-              name="Create Timer"
-              component={TimerCreateWithLayout}
-              options={{title: 'Create Timer Page'}}
-            />
-            <Stack.Screen
-              name="Create Folder"
-              component={FolderCreateWithLayout}
-              options={{title: 'Create Folder Page'}}
-            />
-            <Stack.Screen
-              name="Timer Update"
-              component={TimerUpdateWithLayout}
-              options={{title: 'Timer Update Page'}}
-            />
-            <Stack.Screen
-              name="Login"
-              component={Login}
-              options={{title: 'Login Page'}}
-            />
-            <Stack.Screen
-              name="Refresh"
-              component={Refresh}
-              options={{title: 'Refresh Page'}}
-            />
-          </Stack.Group>
+            <Stack.Group
+              screenOptions={{
+                contentStyle: {backgroundColor: '#fff'},
+              }}>
+              <Stack.Screen
+                name="Main"
+                component={MainWithLayout}
+                options={{title: 'Main Page', animation: 'none'}}
+              />
+              <Stack.Screen
+                name="Detail"
+                component={DetailWithLayout}
+                options={{title: 'Detail Page'}}
+              />
+              <Stack.Screen
+                name="Create Timer"
+                component={TimerCreateWithLayout}
+                options={{title: 'Create Timer Page'}}
+              />
+              <Stack.Screen
+                name="Create Folder"
+                component={FolderCreateWithLayout}
+                options={{title: 'Create Folder Page'}}
+              />
+              <Stack.Screen
+                name="Timer Update"
+                component={TimerUpdateWithLayout}
+                options={{title: 'Timer Update Page'}}
+              />
+              <Stack.Screen
+                name="Login"
+                component={Login}
+                options={{title: 'Login Page'}}
+              />
+              <Stack.Screen
+                name="Refresh"
+                component={Refresh}
+                options={{title: 'Refresh Page'}}
+              />
+            </Stack.Group>
 
-          <Stack.Group
-            screenOptions={{
-              presentation: 'transparentModal',
-              contentStyle: {backgroundColor: 'transparent'},
-            }}>
-            <Stack.Screen
-              name="Create Modal"
-              component={NewCreateModal}
-              options={{title: 'Create Modal'}}
-            />
-          </Stack.Group>
-        </Stack.Navigator>
-      </NavigationContainer>
+            <Stack.Group
+              screenOptions={{
+                presentation: 'transparentModal',
+                contentStyle: {backgroundColor: 'transparent'},
+              }}>
+              <Stack.Screen
+                name="Create Modal"
+                component={NewCreateModal}
+                options={{title: 'Create Modal'}}
+              />
+            </Stack.Group>
+          </Stack.Navigator>
+        </NavigationContainer>
       </GestureHandlerRootView>
     </>
   );
