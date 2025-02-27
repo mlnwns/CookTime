@@ -14,6 +14,7 @@ import TimerUpdatePage from './pages/TimerUpdatePage';
 import Refresh from './pages/Refresh';
 import Login from './pages/Login';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import FolderPage from './pages/FolderPage';
 import {useAppStateMonitor} from './hooks/useAppStateMonitor';
 import {useBackgroundTask} from './hooks/useBackgroundTask';
 
@@ -61,6 +62,11 @@ function App(): React.JSX.Element {
                 options={{title: 'Create Folder Page'}}
               />
               <Stack.Screen
+                name="FolderPage"
+                component={FolderPageWithLayout}
+                options={{title: 'Folder Page'}}
+              />
+              <Stack.Screen
                 name="Timer Update"
                 component={TimerUpdateWithLayout}
                 options={{title: 'Timer Update Page'}}
@@ -95,6 +101,12 @@ function App(): React.JSX.Element {
   );
 }
 
+const FolderPageWithLayout = () => (
+  <BaseLayout>
+    <FolderPage />
+  </BaseLayout>
+);
+
 const MainWithLayout = () => (
   <BaseLayout>
     <MainPage />
@@ -111,11 +123,7 @@ const TimerCreateWithLayout = () => <TimerCreatePage />;
 
 const TimerUpdateWithLayout = () => <TimerUpdatePage />;
 
-const FolderCreateWithLayout = () => (
-  <BaseLayout>
-    <FolderCreatePage />
-  </BaseLayout>
-);
+const FolderCreateWithLayout = () => <FolderCreatePage />;
 
 export default App;
 

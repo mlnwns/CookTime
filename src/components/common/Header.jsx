@@ -4,10 +4,11 @@ import {scale} from 'react-native-size-matters';
 import {TouchableWithoutFeedback, Image, Text, Platform} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import CustomText from '../CustomText';
+import {useRoute} from '@react-navigation/native';
 
 const Header = ({type, title, onPressComplete, timer}) => {
   const navigation = useNavigation();
-
+  const route = useRoute();
   const titleWeight = Platform.select({
     ios: 'bold',
     android: 'medium',
@@ -43,6 +44,33 @@ const Header = ({type, title, onPressComplete, timer}) => {
           onPress={() => navigation.navigate('Timer Update', {timer})}>
           <RightText>편집</RightText>
         </RightTextButton>
+      </HeaderContainer>
+    );
+  } else if (type === 'folder') {
+    return (
+      <HeaderContainer>
+        <TouchableWithoutFeedback onPress={() => navigation.goBack()}>
+          <IconButton>
+            <BackButtonIcon
+              source={require('../../assets/images/header/back-icon.png')}
+            />
+          </IconButton>
+        </TouchableWithoutFeedback>
+        <TitleText weight={titleWeight}>{title}</TitleText>
+        <IconContainer>
+          <RightTextButton
+            onPress={() =>
+              navigation.navigate('Create Timer', {
+                folderId: route.params?.folder?.id,
+              })
+            }>
+            <IconButton>
+              <StyledIcon
+                source={require('../../assets/images/header/plus.png')}
+              />
+            </IconButton>
+          </RightTextButton>
+        </IconContainer>
       </HeaderContainer>
     );
   } else if (['timerCreate', 'folderCreate'].includes(type)) {

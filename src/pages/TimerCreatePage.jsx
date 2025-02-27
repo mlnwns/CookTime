@@ -13,6 +13,7 @@ import Header from '../components/common/Header';
 import IconPickerModal from '../components/modal/iconPickerModal/IconPickerModal';
 import AppDataStorage from '../utils/AppDataStorage';
 import {useNavigation} from '@react-navigation/native';
+import {useRoute} from '@react-navigation/native';
 
 const TimerCreatePage = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -25,9 +26,11 @@ const TimerCreatePage = () => {
   const [detailTimers, setDetailTimers] = useState([
     {id: 0, minutes: '00', seconds: '00', fireData: '약불', memoData: ''},
   ]);
+  const route = useRoute();
   const navigation = useNavigation();
   const [totalMinutes, setTotalMinutes] = useState('00');
   const [totalSeconds, setTotalSeconds] = useState('00');
+  const folderId = route.params?.folderId;
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
@@ -153,6 +156,8 @@ const TimerCreatePage = () => {
         timerColor: timerColor,
         icon: selectedIcon,
         detailTimerData: detailTimers,
+        folderId: folderId, // 폴더 ID 추가
+        createdAt: Date.now(), // 생성 시간 추가
       };
 
       const storedTimers = await AppDataStorage.load('timers');

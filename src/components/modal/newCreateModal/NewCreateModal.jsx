@@ -27,10 +27,9 @@ const NewCreateModal = () => {
   };
 
   const handleCreateFolder = () => {
-    Alert.alert('서비스 준비중', '폴더 기능은 서비스 준비 중입니다.');
-    // setIsModalVisible(false);
-    // navigation.goBack();
-    // navigation.navigate('Create Folder');
+    setIsModalVisible(false);
+    navigation.goBack();
+    navigation.navigate('Create Folder');
   };
 
   return (

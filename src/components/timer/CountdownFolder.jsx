@@ -1,20 +1,48 @@
-import styled from 'styled-components';
+import styled from 'styled-components/native';
 import {scale} from 'react-native-size-matters';
 import CustomText from '../CustomText';
-import {Platform} from 'react-native';
+import {Platform, TouchableWithoutFeedback} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 
-const CountdownFolder = () => {
+const getLighterColor = color => {
+  if (color === '#FBDF60') return '#ffea8d';
+  if (color === '#F6DBB7') return '#FDECD6';
+  if (color === '#BAE2FF') return '#d2ecff';
+  if (color === '#C8E7A7') return '#dcf3c4';
+  if (color === '#FCC4C4') return '#FFD5D5';
+  return '#FCC4C4';
+};
+
+const CountdownFolder = ({folder, onFolderClick}) => {
+  const navigation = useNavigation();
+  const icon = folder?.icon || '🍔';
+  const folderName = folder?.folderName || '쉬림프 타코';
+  const folderColor = folder?.folderColor || '#F4A7A3';
+  const lighterColor = getLighterColor(folderColor);
+
+  const handlePress = () => {
+    if (onFolderClick) {
+      setTimeout(() => {
+        onFolderClick(folder);
+      }, 1000);
+    }
+
+    navigation.navigate('FolderPage', {folder});
+  };
+
   return (
-    <CountdownFolderContainer>
-      <TopLeftSectionView />
-      <TopRightSectionView />
-      <BottomSectionWrapper>
-        <IconboxWrapper>
-          <IconView>🍔</IconView>
-        </IconboxWrapper>
-        <FoodTitleText weight="bold">쉬림프 타코</FoodTitleText>
-      </BottomSectionWrapper>
-    </CountdownFolderContainer>
+    <TouchableWithoutFeedback onPress={handlePress}>
+      <CountdownFolderContainer>
+        <TopLeftSectionView color={lighterColor} />
+        <TopRightSectionView color={lighterColor} />
+        <BottomSectionWrapper color={folderColor}>
+          <IconboxWrapper>
+            <IconView>{icon}</IconView>
+          </IconboxWrapper>
+          <FoodTitleText weight="medium">{folderName}</FoodTitleText>
+        </BottomSectionWrapper>
+      </CountdownFolderContainer>
+    </TouchableWithoutFeedback>
   );
 };
 
@@ -29,7 +57,7 @@ const TopLeftSectionView = styled.View`
   position: absolute;
   width: ${scale(70)}px;
   height: ${scale(134.7)}px;
-  background-color: #ffd5d5;
+  background-color: ${props => props.color || '#FCC4C4'};
   border-radius: ${scale(15)}px;
   bottom: 0;
   margin-left: ${scale(10)}px;
@@ -39,7 +67,7 @@ const TopRightSectionView = styled.View`
   position: absolute;
   width: ${scale(119)}px;
   height: ${scale(126.5)}px;
-  background-color: #ffd5d5;
+  background-color: ${props => props.color || '#FCC4C4'};
   border-radius: ${scale(15)}px;
   bottom: 0;
   margin-left: ${scale(12)}px;
@@ -50,7 +78,7 @@ const BottomSectionWrapper = styled.View`
   padding: ${scale(15)}px;
   width: ${scale(140)}px;
   height: ${scale(113)}px;
-  background-color: #fcc4c4;
+  background-color: ${props => props.color || '#F4A7A3'};
   border-radius: ${scale(15)}px;
   bottom: 0;
 `;
@@ -58,9 +86,8 @@ const BottomSectionWrapper = styled.View`
 const IconboxWrapper = styled.View`
   width: ${scale(40)}px;
   height: ${scale(38.5)}px;
-  background-color: #ffffff;
   border-radius: ${scale(13)}px;
-  opacity: 0.7;
+  background-color: rgba(255, 255, 255, 0.7);
   justify-content: center;
   align-items: center;
 `;
@@ -72,5 +99,5 @@ const IconView = styled(CustomText)`
 const FoodTitleText = styled(CustomText)`
   padding-top: ${Platform.select({ios: scale(23), android: scale(21)})}px;
   opacity: 0.6;
-  font-size: ${scale(17)}px;
+  font-size: ${scale(16)}px;
 `;
