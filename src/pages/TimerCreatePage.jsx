@@ -11,7 +11,7 @@ import PlusButton from '../components/timerCreate/PlusButton';
 import TotalTimer from '../components/timerCreate/TotalTimer';
 import Header from '../components/common/Header';
 import IconPickerModal from '../components/modal/iconPickerModal/IconPickerModal';
-import AppDataStorage from '../utils/AppDataStorage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
 import {useRoute} from '@react-navigation/native';
 
@@ -160,10 +160,10 @@ const TimerCreatePage = () => {
         createdAt: Date.now(), // 생성 시간 추가
       };
 
-      const storedTimers = await AppDataStorage.load('timers');
+      const storedTimers = await AsyncStorage.getItem('timers');
       const updatedTimers = [...(storedTimers ? storedTimers : []), newTimer];
 
-      await AppDataStorage.save('timers', updatedTimers);
+      await AsyncStorage.save('timers', updatedTimers);
       Alert.alert('저장 완료', '타이머가 성공적으로 저장되었습니다.');
 
       setTimerName('');

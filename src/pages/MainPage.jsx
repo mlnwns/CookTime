@@ -9,7 +9,7 @@ import {useFocusEffect} from '@react-navigation/native';
 import initialMockData from '../data/initialMockData';
 import {checkFirstUser} from '../utils/checkFirstUser';
 import {useNavigation} from '@react-navigation/native';
-import AppDataStorage from '../utils/AppDataStorage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const MainPage = () => {
   const navigation = useNavigation();
@@ -17,14 +17,15 @@ const MainPage = () => {
 
   const loadData = async () => {
     try {
-      const storedTimers = await AppDataStorage.load('timers');
-      const storedFolders = await AppDataStorage.load('folders');
+      const storedTimersString = await AsyncStorage.getItem('timers');
+      const storedFoldersString = await AsyncStorage.getItem('folders');
 
       let combinedItems = [];
 
       // 타이머 데이터 추가
-      if (storedTimers) {
-        const standaloneTimers = storedTimers
+      if (storedTimersString) {
+        const parsedTimers = JSON.parse(storedTimersString);
+        const standaloneTimers = parsedTimers
           .filter(timer => !timer.folderId)
           .map(timer => ({
             ...timer,
@@ -34,8 +35,9 @@ const MainPage = () => {
       }
 
       // 폴더 데이터 추가
-      if (storedFolders) {
-        const folderItems = storedFolders.map(folder => ({
+      if (storedFoldersString) {
+        const parsedFolders = JSON.parse(storedFoldersString);
+        const folderItems = parsedFolders.map(folder => ({
           ...folder,
           type: 'folder',
         }));
@@ -61,9 +63,10 @@ const MainPage = () => {
       const now = Date.now();
 
       // Storage 업데이트
-      const storedTimers = await AppDataStorage.load('timers');
-      if (storedTimers) {
-        const updatedTimers = [...storedTimers];
+      const storedTimersString = await AsyncStorage.getItem('timers');
+      if (storedTimersString) {
+        const parsedTimers = JSON.parse(storedTimersString);
+        const updatedTimers = [...parsedTimers];
         const timerIndex = updatedTimers.findIndex(
           t => t.id === clickedTimer.id,
         );
@@ -72,7 +75,7 @@ const MainPage = () => {
             ...updatedTimers[timerIndex],
             updatedAt: now,
           };
-          await AppDataStorage.save('timers', updatedTimers);
+          await AsyncStorage.setItem('timers', JSON.stringify(updatedTimers));
         }
       }
 
@@ -102,9 +105,10 @@ const MainPage = () => {
       const now = Date.now();
 
       // Storage 업데이트
-      const storedFolders = await AppDataStorage.load('folders');
-      if (storedFolders) {
-        const updatedFolders = [...storedFolders];
+      const storedFoldersString = await AsyncStorage.getItem('folders');
+      if (storedFoldersString) {
+        const parsedFolders = JSON.parse(storedFoldersString);
+        const updatedFolders = [...parsedFolders];
         const folderIndex = updatedFolders.findIndex(
           f => f.id === clickedFolder.id,
         );
@@ -113,7 +117,7 @@ const MainPage = () => {
             ...updatedFolders[folderIndex],
             updatedAt: now,
           };
-          await AppDataStorage.save('folders', updatedFolders);
+          await AsyncStorage.setItem('folders', JSON.stringify(updatedFolders));
         }
       }
 
@@ -150,13 +154,10 @@ const MainPage = () => {
             type: 'timer',
           }));
 
-          await AppDataStorage.save('timers', mockedData);
+          await AsyncStorage.setItem('timers', JSON.stringify(mockedData));
 
           // 초기 데이터를 items에 설정
           setItems(mockedData.map(timer => ({...timer, type: 'timer'})));
-
-          // 로그인 페이지로 이동
-          navigation.navigate('Login');
         }
       } catch (error) {
         console.error('초기화 실패:', error);

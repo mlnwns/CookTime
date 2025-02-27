@@ -12,7 +12,6 @@ import FolderCreatePage from './pages/FolderCreatePage';
 import {StatusBar} from 'react-native';
 import TimerUpdatePage from './pages/TimerUpdatePage';
 import Refresh from './pages/Refresh';
-import Login from './pages/Login';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import FolderPage from './pages/FolderPage';
 import {useAppStateMonitor} from './hooks/useAppStateMonitor';
@@ -70,11 +69,6 @@ function App(): React.JSX.Element {
                 name="Timer Update"
                 component={TimerUpdateWithLayout}
                 options={{title: 'Timer Update Page'}}
-              />
-              <Stack.Screen
-                name="Login"
-                component={Login}
-                options={{title: 'Login Page'}}
               />
               <Stack.Screen
                 name="Refresh"

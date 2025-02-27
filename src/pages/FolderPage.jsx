@@ -6,7 +6,7 @@ import {ScrollView} from 'react-native';
 import Header from '../components/common/Header';
 import CountdownTimer from '../components/timer/CountdownTimer';
 import {useRoute, useNavigation} from '@react-navigation/native';
-import AppDataStorage from '../utils/AppDataStorage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const FolderPage = () => {
   const route = useRoute();
@@ -18,15 +18,19 @@ const FolderPage = () => {
     React.useCallback(() => {
       const loadFolderTimers = async () => {
         try {
-          const storedTimers = await AppDataStorage.load('timers');
-          if (storedTimers) {
-            const folderTimers = storedTimers.filter(
+          const storedTimersString = await AsyncStorage.getItem('timers');
+          if (storedTimersString) {
+            const parsedTimers = JSON.parse(storedTimersString);
+            const folderTimers = parsedTimers.filter(
               timer => timer.folderId === folder.id,
             );
             setTimers(folderTimers);
+          } else {
+            setTimers([]);
           }
         } catch (error) {
           console.error('타이머 로드 실패:', error);
+          setTimers([]);
         }
       };
 
@@ -38,16 +42,17 @@ const FolderPage = () => {
 
   const handleTimerClick = async clickedTimer => {
     try {
-      const storedTimers = await AppDataStorage.load('timers');
-      if (storedTimers) {
-        const updatedTimers = [...storedTimers];
+      const storedTimersString = await AsyncStorage.getItem('timers');
+      if (storedTimersString) {
+        const parsedTimers = JSON.parse(storedTimersString);
+        const updatedTimers = [...parsedTimers];
         const timerIndex = updatedTimers.findIndex(
           t => t.id === clickedTimer.id,
         );
         if (timerIndex > -1) {
           const [timer] = updatedTimers.splice(timerIndex, 1);
           updatedTimers.unshift(timer);
-          await AppDataStorage.save('timers', updatedTimers);
+          await AsyncStorage.setItem('timers', JSON.stringify(updatedTimers));
 
           // 현재 폴더의 타이머만 다시 불러옴
           const folderTimers = updatedTimers.filter(

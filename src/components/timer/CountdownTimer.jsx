@@ -4,7 +4,7 @@ import CustomText from '../CustomText';
 import {Platform, TouchableWithoutFeedback, Alert} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import useTimerStore from '../../store';
-import AppDataStorage from '../../utils/AppDataStorage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useEffect} from 'react';
 
 const DetailColor = color => {
@@ -42,11 +42,11 @@ const CountdownTimer = ({timer, onTimerClick}) => {
 
   const deleteTimerData = async id => {
     try {
-      const storedTimers = await AppDataStorage.load('timers');
+      const storedTimers = await AsyncStorage.getItem('timers');
       const updatedTimers = (storedTimers ? storedTimers : []).filter(
         parsedTimer => parsedTimer.id !== id,
       );
-      await AppDataStorage.save('timers', updatedTimers);
+      await AsyncStorage.save('timers', updatedTimers);
       Alert.alert('삭제 완료', '타이머가 성공적으로 삭제되었습니다.');
       navigation.replace('Main', {animation: 'none'});
     } catch (error) {

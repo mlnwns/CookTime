@@ -11,8 +11,8 @@ import PlusButton from '../components/timerCreate/PlusButton';
 import TotalTimer from '../components/timerCreate/TotalTimer';
 import Header from '../components/common/Header';
 import IconPickerModal from '../components/modal/iconPickerModal/IconPickerModal';
-import AppDataStorage from '../utils/AppDataStorage';
 import {useNavigation, useRoute} from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const TimerUpdatePage = () => {
   const route = useRoute();
@@ -110,13 +110,13 @@ const TimerUpdatePage = () => {
       };
 
       // 데이터 수정 완료되면 확인해야 할 부분
-      const storedTimers = await AppDataStorage.load('timers');
+      const storedTimers = await AsyncStorage.getItem('timers');
       // 현재 id가 없어서인지 타이머를 수정하면 전체 타이머에 적용되는 오류가 발생하고 있음
       const updatedTimers = (storedTimers ? storedTimers : []).map(t =>
         t.id === timer.id ? newTimer : t,
       );
 
-      await AppDataStorage.save('timers', updatedTimers);
+      await AsyncStorage.save('timers', updatedTimers);
       Alert.alert('저장 완료', '타이머가 성공적으로 저장되었습니다.');
 
       setTimerName('');

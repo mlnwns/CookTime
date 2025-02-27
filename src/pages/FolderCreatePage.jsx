@@ -7,7 +7,7 @@ import IconPicker from '../components/common/IconPicker';
 import InputComponent from '../components/folderCreate/InputComponent';
 import Header from '../components/common/Header';
 import IconPickerModal from '../components/modal/iconPickerModal/IconPickerModal';
-import AppDataStorage from '../utils/AppDataStorage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
 import {Alert, Platform} from 'react-native';
 
@@ -47,13 +47,13 @@ const FolderCreatePage = () => {
         createdAt: Date.now(), // 생성 시간 추가
       };
 
-      const storedFolders = await AppDataStorage.load('folders');
+      const storedFolders = await AsyncStorage.getItem('folders');
       const updatedFolders = [
         ...(storedFolders ? storedFolders : []),
         newFolder,
       ];
 
-      await AppDataStorage.save('folders', updatedFolders);
+      await AsyncStorage.save('folders', updatedFolders);
       Alert.alert('저장 완료', '폴더가 성공적으로 저장되었습니다.');
 
       setFolderName('');
