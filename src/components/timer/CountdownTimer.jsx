@@ -6,6 +6,7 @@ import {useNavigation} from '@react-navigation/native';
 import useTimerStore from '../../store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useEffect} from 'react';
+import FolderDeleteButton from './FolderDeleteButton';
 
 const DetailColor = color => {
   if (color === '#FBDF60') return '#FFC15B';
@@ -15,7 +16,12 @@ const DetailColor = color => {
   if (color === '#FCC4C4') return '#F4A7A3';
 };
 
-const CountdownTimer = ({timer, onTimerClick}) => {
+const CountdownTimer = ({
+  timer,
+  onTimerClick,
+  setIsDeleteMode,
+  isDeleteMode,
+}) => {
   const navigation = useNavigation();
   const timerStore = useTimerStore();
   const currentTimer = useTimerStore(state => state.timers[timer.id]);
@@ -42,11 +48,13 @@ const CountdownTimer = ({timer, onTimerClick}) => {
 
   const deleteTimerData = async id => {
     try {
+      console.log(id);
       const storedTimers = await AsyncStorage.getItem('timers');
-      const updatedTimers = (storedTimers ? storedTimers : []).filter(
-        parsedTimer => parsedTimer.id !== id,
-      );
-      await AsyncStorage.save('timers', updatedTimers);
+      const updatedTimers = (
+        storedTimers ? JSON.parse(storedTimers) : []
+      ).filter(parsedTimer => parsedTimer.id !== id);
+
+      await AsyncStorage.setItem('timers', JSON.stringify(updatedTimers));
       Alert.alert('삭제 완료', '타이머가 성공적으로 삭제되었습니다.');
       navigation.replace('Main', {animation: 'none'});
     } catch (error) {
@@ -56,20 +64,14 @@ const CountdownTimer = ({timer, onTimerClick}) => {
   };
 
   const handleLongPress = () => {
-    Alert.alert(
-      '타이머 삭제',
-      '삭제한 타이머는 되돌릴 수 없습니다. 삭제하시겠습니까?',
-      [
-        {
-          text: '취소',
-          style: 'cancel',
-        },
-        {text: '삭제', onPress: () => deleteTimerData(timer.id)},
-      ],
-    );
+    setIsDeleteMode(true);
   };
 
   const handlePress = () => {
+    if (isDeleteMode) {
+      setIsDeleteMode(false);
+      return;
+    }
     navigation.navigate('Detail', {timer});
     setTimeout(() => {
       onTimerClick(timer);
@@ -80,45 +82,58 @@ const CountdownTimer = ({timer, onTimerClick}) => {
   const darkerColor = DetailColor(timer.timerColor);
 
   return (
-    <TouchableWithoutFeedback
-      onPress={handlePress}
-      onLongPress={handleLongPress}>
-      <TimerContainer>
-        <BackgroundView color={timer.timerColor} />
-        <ProgressView
-          color={darkerColor}
-          style={{
-            position: 'absolute',
-            right: 0,
-            width: `${progress * 100}%`,
-            height: '100%',
-            borderTopRightRadius: scale(13),
-            borderBottomRightRadius: scale(13),
-          }}
+    <Container>
+      {isDeleteMode && (
+        <FolderDeleteButton
+          onDelete={() => deleteTimerData(timer.id)}
+          id={timer.id}
         />
-        <ContentWrapper>
-          <TimerHeaderWrapper>
-            <IconboxWrapper>
-              <IconView>{timer.icon}</IconView>
-            </IconboxWrapper>
-            <EnterImage
-              source={require('../../assets/images/timerBox/enter-arrow.png')}
-            />
-          </TimerHeaderWrapper>
-          <FoodTitleText weight="semi-bold">{timer.timerName}</FoodTitleText>
-          <TimerText weight="bold">
-            {currentTimer
-              ? `${String(currentTimer.totalTime.minutes).padStart(
-                  2,
-                  '0',
-                )}:${String(currentTimer.totalTime.seconds).padStart(2, '0')}`
-              : '00:00'}
-          </TimerText>
-        </ContentWrapper>
-      </TimerContainer>
-    </TouchableWithoutFeedback>
+      )}
+      <TouchableWithoutFeedback
+        onPress={isDeleteMode ? () => {} : handlePress}
+        onLongPress={handleLongPress}>
+        <TimerContainer>
+          <BackgroundView color={timer.timerColor} />
+          <ProgressView
+            color={darkerColor}
+            style={{
+              position: 'absolute',
+              right: 0,
+              width: `${progress * 100}%`,
+              height: '100%',
+              borderTopRightRadius: scale(13),
+              borderBottomRightRadius: scale(13),
+            }}
+          />
+          <ContentWrapper>
+            <TimerHeaderWrapper>
+              <IconboxWrapper>
+                <IconView>{timer.icon}</IconView>
+              </IconboxWrapper>
+              <EnterImage
+                source={require('../../assets/images/timerBox/enter-arrow.png')}
+              />
+            </TimerHeaderWrapper>
+            <FoodTitleText weight="semi-bold">{timer.timerName}</FoodTitleText>
+            <TimerText weight="bold">
+              {currentTimer
+                ? `${String(currentTimer.totalTime.minutes).padStart(
+                    2,
+                    '0',
+                  )}:${String(currentTimer.totalTime.seconds).padStart(2, '0')}`
+                : '00:00'}
+            </TimerText>
+          </ContentWrapper>
+        </TimerContainer>
+      </TouchableWithoutFeedback>
+    </Container>
   );
 };
+
+const Container = styled.View`
+  z-index: 1;
+  position: relative;
+`;
 
 const TimerContainer = styled.View`
   width: ${scale(140)}px;
