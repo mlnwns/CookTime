@@ -1,14 +1,14 @@
+import {useBackgroundAudio} from './useBackgroundSound';
 import {useRef, useEffect} from 'react';
 import {AppState} from 'react-native';
-import {useBackgroundTask} from './useBackgroundTask';
 
 export const useAppStateMonitor = () => {
   const appStateRef = useRef(AppState.currentState);
-  const {startBackgroundTask, stopBackgroundTask} = useBackgroundTask();
+  const {startSilentAudio, stopSilentAudio} = useBackgroundAudio();
 
   useEffect(() => {
     if (appStateRef.current === 'active') {
-      stopBackgroundTask();
+      stopSilentAudio();
     }
 
     const subscription = AppState.addEventListener('change', nextAppState => {
@@ -16,16 +16,16 @@ export const useAppStateMonitor = () => {
         appStateRef.current.match(/inactive|background/) &&
         nextAppState === 'active'
       ) {
-        // console.log('App has come to the foreground!');
-        stopBackgroundTask();
+        // console.log('🔄 Foreground: Stopping silent audio');
+        stopSilentAudio();
       }
 
       if (
         appStateRef.current === 'active' &&
         nextAppState.match(/inactive|background/)
       ) {
-        // console.log('App has gone to the background!');
-        startBackgroundTask();
+        // console.log('🎵 Background: Starting silent audio');
+        startSilentAudio();
       }
 
       appStateRef.current = nextAppState;
@@ -33,7 +33,7 @@ export const useAppStateMonitor = () => {
 
     return () => {
       subscription.remove();
-      stopBackgroundTask();
+      stopSilentAudio();
     };
   }, []);
 };

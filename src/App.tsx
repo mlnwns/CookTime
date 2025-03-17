@@ -15,13 +15,11 @@ import Refresh from './pages/Refresh';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import FolderPage from './pages/FolderPage';
 import {useAppStateMonitor} from './hooks/useAppStateMonitor';
-import {useBackgroundTask} from './hooks/useBackgroundTask';
 
 const Stack = createNativeStackNavigator();
 
 function App(): React.JSX.Element {
   useAppStateMonitor();
-  useBackgroundTask();
 
   return (
     <>
