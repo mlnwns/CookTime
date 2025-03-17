@@ -11,9 +11,7 @@ const onClick = (onDelete, id) => {
   ]);
 };
 
-const FolderDeleteButton = ({style, onDelete, id}) => {
-  console.log(onDelete);
-
+const DeleteButton = ({style, onDelete, id}) => {
   return (
     <Container style={style}>
       <TouchableWithoutFeedback onPress={() => onClick(onDelete, id)}>
@@ -40,4 +38,4 @@ const ButtonWrapper = styled.View`
   height: ${scale(25)}px;
 `;
 
-export default FolderDeleteButton;
+export default DeleteButton;
