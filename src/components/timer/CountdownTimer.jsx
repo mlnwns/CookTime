@@ -15,7 +15,7 @@ import Animated, {
   withSequence,
   cancelAnimation,
 } from 'react-native-reanimated';
-import DeleteButton from './DeleteButton';
+import DeleteButton from '../common/DeleteButton';
 
 const DetailColor = color => {
   if (color === '#FBDF60') return '#FFC15B';
@@ -49,28 +49,31 @@ const CountdownTimer = ({
   }, [timer.id]);
 
   useEffect(() => {
-    if (isDeleteMode) {
-      rotation.value = withRepeat(
-        withSequence(
-          withTiming(-1.5, {
-            duration: 500,
-            easing: Easing.linear,
-          }),
-          withTiming(1.5, {
-            duration: 500,
-            easing: Easing.linear,
-          }),
-        ),
-        -1,
-        true,
-      );
-    } else {
-      cancelAnimation(rotation);
-      rotation.value = withTiming(0, {
-        duration: 150,
-        easing: Easing.linear,
-      });
-    }
+    const delay = Math.random() * 250;
+    setTimeout(() => {
+      if (isDeleteMode) {
+        rotation.value = withRepeat(
+          withSequence(
+            withTiming(-1.5, {
+              duration: 200,
+              easing: Easing.linear,
+            }),
+            withTiming(1.5, {
+              duration: 200,
+              easing: Easing.linear,
+            }),
+          ),
+          -1,
+          true,
+        );
+      } else {
+        cancelAnimation(rotation);
+        rotation.value = withTiming(0, {
+          duration: 150,
+          easing: Easing.linear,
+        });
+      }
+    }, delay);
   }, [isDeleteMode]);
 
   const animatedStyle = useAnimatedStyle(() => {
@@ -131,6 +134,7 @@ const CountdownTimer = ({
         <DeleteButton
           onDelete={() => deleteTimerData(timer.id)}
           id={timer.id}
+          isFolder={false}
         />
       )}
       <TouchableWithoutFeedback
