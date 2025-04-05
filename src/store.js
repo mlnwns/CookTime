@@ -4,7 +4,13 @@ import PushNotificationIOS from '@react-native-community/push-notification-ios';
 const useTimerStore = create(set => ({
   timers: {},
 
-  initTimer: (timerId, initialMinutes, initialSeconds, detailTimerData, timerName) => {
+  initTimer: (
+    timerId,
+    initialMinutes,
+    initialSeconds,
+    detailTimerData,
+    timerName,
+  ) => {
     set(state => {
       // 이미 실행 중인 타이머는 건드리지 않음
       if (state.timers[timerId]?.isRunning) {
@@ -104,7 +110,7 @@ const useTimerStore = create(set => ({
               body: `${currentTimer.timerName}의 ${
                 currentTimer.currentStepIndex + 1
               }번째 타이머가 완료되었습니다!`,
-              sound: 'default',
+              sound: 'cook_alarm.mp3',
             });
 
             if (

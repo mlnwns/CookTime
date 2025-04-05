@@ -25,6 +25,7 @@
 		7F3AE7138DC048A9A0125E4B /* Pretendard-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = DD099EA6D8AA4EC0A8E6F890 /* Pretendard-Light.otf */; };
 		8114CB3F158A4D9C83B8302C /* Pretendard-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = B1090100C68247E18958F196 /* Pretendard-Regular.otf */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		A68A77232DA1378400F95FAE /* cook_alarm.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = A68A77222DA1378400F95FAE /* cook_alarm.mp3 */; };
 		BA98693EE4B42A08E15D8820 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */; };
 		DE2C679409C14E3593C2020E /* Pretendard-Black.otf in Resources */ = {isa = PBXBuildFile; fileRef = 3DF28ECD8A2948F28BE3F374 /* Pretendard-Black.otf */; };
 /* End PBXBuildFile section */
@@ -102,6 +103,7 @@
 		A63B238C2CDDED2800DFB8EC /* Octicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Octicons.ttf; sourceTree = "<group>"; };
 		A63B238D2CDDED2E00DFB8EC /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = SimpleLineIcons.ttf; sourceTree = "<group>"; };
 		A63B238E2CDDED3500DFB8EC /* Zocial.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Zocial.ttf; sourceTree = "<group>"; };
+		A68A77222DA1378400F95FAE /* cook_alarm.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = cook_alarm.mp3; sourceTree = "<group>"; };
 		B1090100C68247E18958F196 /* Pretendard-Regular.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Pretendard-Regular.otf"; path = "../src/assets/fonts/Pretendard-Regular.otf"; sourceTree = "<group>"; };
 		B51A3DAF6633434B8CBD33CC /* Pretendard-ExtraLight.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Pretendard-ExtraLight.otf"; path = "../src/assets/fonts/Pretendard-ExtraLight.otf"; sourceTree = "<group>"; };
 		C18A8E7E8DF44797B7BD7221 /* Pretendard-Bold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Pretendard-Bold.otf"; path = "../src/assets/fonts/Pretendard-Bold.otf"; sourceTree = "<group>"; };
@@ -185,6 +187,7 @@
 				D747126915BD4FCB80063642 /* Pretendard-SemiBold.otf */,
 				A40F47C4E2B649669E8BD795 /* Pretendard-Thin.otf */,
 				2929FCC42D7E097B00DE4D37 /* silentSound.mp3 */,
+				A68A77222DA1378400F95FAE /* cook_alarm.mp3 */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -382,6 +385,7 @@
 				2929FCC52D7E097B00DE4D37 /* silentSound.mp3 in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				BA98693EE4B42A08E15D8820 /* PrivacyInfo.xcprivacy in Resources */,
+				A68A77232DA1378400F95FAE /* cook_alarm.mp3 in Resources */,
 				DE2C679409C14E3593C2020E /* Pretendard-Black.otf in Resources */,
 				6BCF45A8AABB4AFCB04D3D4B /* Pretendard-Bold.otf in Resources */,
 				1AEF42062D2FFC3600C73367 /* Config.xcconfig in Resources */,
@@ -757,10 +761,7 @@
 					"-DFOLLY_CFG_NO_COROUTINES=1",
 					"-DFOLLY_HAVE_CLOCK_GETTIME=1",
 				);
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					" ",
-				);
+				OTHER_LDFLAGS = "$(inherited)  ";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
@@ -830,10 +831,7 @@
 					"-DFOLLY_CFG_NO_COROUTINES=1",
 					"-DFOLLY_HAVE_CLOCK_GETTIME=1",
 				);
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					" ",
-				);
+				OTHER_LDFLAGS = "$(inherited)  ";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				USE_HERMES = true;
