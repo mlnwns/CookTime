@@ -68,16 +68,16 @@ const FolderPage = () => {
 
   return (
     <FolderContainer>
+      <Header
+        type="folder"
+        title={folder?.folderName}
+        icon={folder?.icon}
+        folderId={folder?.id}
+        folder={folder}
+      />
       <ScrollView
         contentContainerStyle={{flexGrow: 1}}
         showsVerticalScrollIndicator={false}>
-        <Header
-          type="folder"
-          title={folder?.folderName}
-          icon={folder?.icon}
-          folderId={folder?.id}
-          folder={folder}
-        />
         <TimersContainer>
           {timers.length > 0 ? (
             timers.map((timer, index) => (

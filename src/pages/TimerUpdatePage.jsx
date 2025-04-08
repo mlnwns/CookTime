@@ -182,15 +182,18 @@ const TimerUpdatePage = () => {
       style={{flex: 1}}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       keyboardVerticalOffset={0}>
+      <HeaderWrapper>
+        <Header
+          type="timerCreate"
+          title="타이머 편집"
+          onPressComplete={saveTimerData}
+        />
+      </HeaderWrapper>
+
       <TimerUpdateContainer
         contentContainerStyle={{flexGrow: 1}}
         showsVerticalScrollIndicator={false}>
         <BaseLayout>
-          <Header
-            type="timerCreate"
-            title="타이머 생성"
-            onPressComplete={saveTimerData}
-          />
           <IconPicker icon={selectedIcon} onSelectIcon={handleIconSelect} />
           <InsertContainer>
             <TimerCreateText weight="semi-bold">타이머 이름</TimerCreateText>
@@ -208,7 +211,7 @@ const TimerUpdatePage = () => {
               seconds={String(time.seconds).padStart(2, '0')}
               fireData={time.fireData}
               memoData={time.memoData}
-              onDelete={index => {
+              onDelete={() => {
                 if (detailTimers.length > 1) {
                   const newDetailTimers = detailTimers.filter(
                     detailTimer => detailTimer.id !== time.id,
@@ -229,11 +232,7 @@ const TimerUpdatePage = () => {
 
         <BaseLayout>
           <PlusButtonWrapper>
-            <PlusButton
-              onPress={() => {
-                addDetailTimer(id);
-              }}
-            />
+            <PlusButton onPress={() => addDetailTimer(id)} />
           </PlusButtonWrapper>
           <TotalTimerContainer>
             <TotalTimer totalTime={[totalMinutes, totalSeconds]} />
@@ -278,6 +277,11 @@ const PlusButtonWrapper = styled.View`
 
 const TotalTimerContainer = styled.View`
   margin: ${scale(20)}px 0;
+`;
+
+const HeaderWrapper = styled.View`
+  padding: 0 ${scale(21)}px;
+  padding-top: ${Platform.select({ios: scale(25), android: scale(12)})}px;
 `;
 
 export default TimerUpdatePage;
