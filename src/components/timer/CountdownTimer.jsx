@@ -235,10 +235,15 @@ const IconView = styled(CustomText)`
   font-size: ${Platform.select({ios: scale(24), android: scale(21)})}px;
 `;
 
-const FoodTitleText = styled(CustomText)`
+const FoodTitleText = styled(CustomText).attrs({
+  numberOfLines: 1,
+  ellipsizeMode: 'tail',
+})`
   padding-top: ${scale(15)}px;
-  opacity: 0.5;
-  font-size: ${scale(15)}px;
+  opacity: 0.6;
+  font-size: ${scale(16)}px;
+  width: 100%;
+  text-align: left;
 `;
 
 const TimerText = styled(CustomText)`
