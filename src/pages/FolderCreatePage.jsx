@@ -12,23 +12,13 @@ import {useNavigation} from '@react-navigation/native';
 import {Alert, Platform} from 'react-native';
 
 const FolderCreatePage = () => {
-  const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedIcon, setSelectedIcon] = useState('🌮');
   const [folderName, setFolderName] = useState('');
-  const [folderColor, setFolderColor] = useState('#f7e485');
+  const [folderColor, setFolderColor] = useState('#FBDF60');
   const navigation = useNavigation();
-
-  const onPressModalOpen = () => {
-    setIsModalVisible(true);
-  };
 
   const handleIconSelect = icon => {
     setSelectedIcon(icon);
-    setIsModalVisible(false);
-  };
-
-  const handleModalClose = () => {
-    setIsModalVisible(false);
   };
 
   const saveFolderData = async () => {

@@ -17,19 +17,16 @@ const CreateModal = ({bottomSheetRef, folder}) => {
 
   const handleCreateTimer = () => {
     bottomSheetRef.current?.close();
-    navigation.goBack();
-    navigation.navigate('Create Timer');
+    navigation.navigate('Create Timer', {folderId: folder ? folder.id : null});
   };
 
   const handleCreateFolder = () => {
     bottomSheetRef.current?.close();
-    navigation.goBack();
     navigation.navigate('Create Folder');
   };
 
   const handleUpdateFolder = () => {
     bottomSheetRef.current?.close();
-    navigation.goBack();
     navigation.navigate('Folder Update', {folder: folder});
   };
 
@@ -57,23 +54,32 @@ const CreateModal = ({bottomSheetRef, folder}) => {
         </TitletContainer>
         <ButtonsContainer>
           {folder ? (
-            <CreateButton
-              onPress={handleUpdateFolder}
-              text="폴더 수정"
-              icon={folderIcon}
-            />
+            <>
+              <CreateButton
+                onPress={handleUpdateFolder}
+                text="폴더 수정"
+                icon={folderIcon}
+              />
+              <CreateButton
+                onPress={handleCreateTimer}
+                text="타이머 생성"
+                icon={timerIcon}
+              />
+            </>
           ) : (
-            <CreateButton
-              onPress={handleCreateFolder}
-              text="폴더 생성"
-              icon={folderIcon}
-            />
+            <>
+              <CreateButton
+                onPress={handleCreateFolder}
+                text="폴더 생성"
+                icon={folderIcon}
+              />
+              <CreateButton
+                onPress={handleCreateTimer}
+                text="타이머 생성"
+                icon={timerIcon}
+              />
+            </>
           )}
-          <CreateButton
-            onPress={handleCreateTimer}
-            text="타이머 생성"
-            icon={timerIcon}
-          />
         </ButtonsContainer>
       </BottomSheetContainer>
     </BottomSheetModal>
@@ -81,7 +87,6 @@ const CreateModal = ({bottomSheetRef, folder}) => {
 };
 
 const BottomSheetContainer = styled(BottomSheetView)`
-  flex: 1;
   background-color: white;
 `;
 

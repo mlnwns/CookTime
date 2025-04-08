@@ -1,5 +1,8 @@
 import {create} from 'zustand';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
+import PushNotification from 'react-native-push-notification';
+
+PushNotification.clo;
 
 const useTimerStore = create(set => ({
   timers: {},
@@ -24,9 +27,10 @@ const useTimerStore = create(set => ({
             ...state.timers,
             [timerId]: {
               ...state.timers[timerId],
+              detailTimerData: detailTimerData,
               time: {
-                minutes: parseInt(initialMinutes),
-                seconds: parseInt(initialSeconds),
+                minutes: parseInt(detailTimerData[0].minutes),
+                seconds: parseInt(detailTimerData[0].seconds),
               },
               totalTime: {
                 minutes: parseInt(initialMinutes),
@@ -104,14 +108,27 @@ const useTimerStore = create(set => ({
           );
 
           if (minutes === 0 && seconds === 0) {
-            PushNotificationIOS.addNotificationRequest({
-              id: `timerComplete-${timerId}`,
-              title: `COOKTIME`,
-              body: `${currentTimer.timerName}의 ${
-                currentTimer.currentStepIndex + 1
-              }번째 타이머가 완료되었습니다!`,
-              sound: 'cook_alarm.mp3',
-            });
+            if (Platform.OS === 'ios') {
+              PushNotificationIOS.addNotificationRequest({
+                id: `timerComplete-${timerId}`,
+                title: `COOKTIME`,
+                body: `${currentTimer.timerName}의 ${
+                  currentTimer.currentStepIndex + 1
+                }번째 타이머가 완료되었습니다!`,
+                sound: 'cook_alarm.mp3',
+              });
+            }
+
+            if (Platform.OS === 'android') {
+              PushNotification.localNotification({
+                channelId: 'default',
+                title: 'COOKTIME',
+                message: `${currentTimer.timerName}의 ${
+                  currentTimer.currentStepIndex + 1
+                }번째 타이머가 완료되었습니다!`,
+                soundName: 'default',
+              });
+            }
 
             if (
               currentTimer.currentStepIndex <
