@@ -182,67 +182,63 @@ const TimerUpdatePage = () => {
       style={{flex: 1}}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       keyboardVerticalOffset={0}>
-      <Wrapper>
+      <HeaderWrapper>
         <Header
           type="timerCreate"
-          title="타이머 생성"
+          title="타이머 편집"
           onPressComplete={saveTimerData}
         />
+      </HeaderWrapper>
 
-        <TimerUpdateContainer
-          contentContainerStyle={{flexGrow: 1}}
-          showsVerticalScrollIndicator={false}>
-          <BaseLayout>
-            <IconPicker icon={selectedIcon} onSelectIcon={handleIconSelect} />
-            <InsertContainer>
-              <TimerCreateText weight="semi-bold">타이머 이름</TimerCreateText>
-              <InputWrapper value={timerName} onChangeText={setTimerName} />
-              <TimerCreateText weight="semi-bold">타이머 색상</TimerCreateText>
-              <ColorPicker color={timerColor} onChangeColor={setTimerColor} />
-            </InsertContainer>
-          </BaseLayout>
+      <TimerUpdateContainer
+        contentContainerStyle={{flexGrow: 1}}
+        showsVerticalScrollIndicator={false}>
+        <BaseLayout>
+          <IconPicker icon={selectedIcon} onSelectIcon={handleIconSelect} />
+          <InsertContainer>
+            <TimerCreateText weight="semi-bold">타이머 이름</TimerCreateText>
+            <InputWrapper value={timerName} onChangeText={setTimerName} />
+            <TimerCreateText weight="semi-bold">타이머 색상</TimerCreateText>
+            <ColorPicker color={timerColor} onChangeColor={setTimerColor} />
+          </InsertContainer>
+        </BaseLayout>
 
-          <DetailTimerWrapper>
-            {detailTimers.map((time, index) => (
-              <DetailTimer
-                key={time.id}
-                minutes={String(time.minutes).padStart(2, '0')}
-                seconds={String(time.seconds).padStart(2, '0')}
-                fireData={time.fireData}
-                memoData={time.memoData}
-                onDelete={() => {
-                  if (detailTimers.length > 1) {
-                    const newDetailTimers = detailTimers.filter(
-                      detailTimer => detailTimer.id !== time.id,
-                    );
-                    setDetailTimers(newDetailTimers);
-                  } else {
-                    Alert.alert('최소 1개의 타이머가 설정 되어야합니다.');
-                  }
-                }}
-                onTimeChange={(minutes, seconds) =>
-                  handleTimeChange(index, minutes, seconds)
+        <DetailTimerWrapper>
+          {detailTimers.map((time, index) => (
+            <DetailTimer
+              key={time.id}
+              minutes={String(time.minutes).padStart(2, '0')}
+              seconds={String(time.seconds).padStart(2, '0')}
+              fireData={time.fireData}
+              memoData={time.memoData}
+              onDelete={() => {
+                if (detailTimers.length > 1) {
+                  const newDetailTimers = detailTimers.filter(
+                    detailTimer => detailTimer.id !== time.id,
+                  );
+                  setDetailTimers(newDetailTimers);
+                } else {
+                  Alert.alert('최소 1개의 타이머가 설정 되어야합니다.');
                 }
-                onFireChange={newFireData =>
-                  handleFireChange(index, newFireData)
-                }
-                onMemoChange={newMemoData =>
-                  handleMemoChange(index, newMemoData)
-                }
-              />
-            ))}
-          </DetailTimerWrapper>
+              }}
+              onTimeChange={(minutes, seconds) =>
+                handleTimeChange(index, minutes, seconds)
+              }
+              onFireChange={newFireData => handleFireChange(index, newFireData)}
+              onMemoChange={newMemoData => handleMemoChange(index, newMemoData)}
+            />
+          ))}
+        </DetailTimerWrapper>
 
-          <BaseLayout>
-            <PlusButtonWrapper>
-              <PlusButton onPress={() => addDetailTimer(id)} />
-            </PlusButtonWrapper>
-            <TotalTimerContainer>
-              <TotalTimer totalTime={[totalMinutes, totalSeconds]} />
-            </TotalTimerContainer>
-          </BaseLayout>
-        </TimerUpdateContainer>
-      </Wrapper>
+        <BaseLayout>
+          <PlusButtonWrapper>
+            <PlusButton onPress={() => addDetailTimer(id)} />
+          </PlusButtonWrapper>
+          <TotalTimerContainer>
+            <TotalTimer totalTime={[totalMinutes, totalSeconds]} />
+          </TotalTimerContainer>
+        </BaseLayout>
+      </TimerUpdateContainer>
     </KeyboardAvoidingView>
   );
 };
@@ -283,9 +279,9 @@ const TotalTimerContainer = styled.View`
   margin: ${scale(20)}px 0;
 `;
 
-const Wrapper = styled.View`
-  flex: 1;
-  background-color: white;
+const HeaderWrapper = styled.View`
+  padding: 0 ${scale(21)}px;
+  padding-top: ${Platform.select({ios: scale(25), android: scale(12)})}px;
 `;
 
 export default TimerUpdatePage;

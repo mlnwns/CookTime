@@ -186,15 +186,17 @@ const TimerCreatePage = () => {
       style={{flex: 1}}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       keyboardVerticalOffset={0}>
+      <HeaderWrapper>
+        <Header
+          type="timerCreate"
+          title="타이머 생성"
+          onPressComplete={saveTimerData}
+        />
+      </HeaderWrapper>
       <TimerCreateContainer
         contentContainerStyle={{flexGrow: 1}}
         showsVerticalScrollIndicator={false}>
         <BaseLayout>
-          <Header
-            type="timerCreate"
-            title="타이머 생성"
-            onPressComplete={saveTimerData}
-          />
           <IconPicker icon={selectedIcon} onSelectIcon={handleIconSelect} />
           <InsertContainer>
             <TimerCreateText weight="semi-bold">타이머 이름</TimerCreateText>
@@ -279,6 +281,11 @@ const PlusButtonWrapper = styled.View`
 
 const TotalTimerContainer = styled.View`
   margin: ${scale(20)}px 0;
+`;
+
+const HeaderWrapper = styled.View`
+  padding: 0 ${scale(21)}px;
+  padding-top: ${Platform.select({ios: scale(25), android: scale(12)})}px;
 `;
 
 export default TimerCreatePage;
