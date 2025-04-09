@@ -7,7 +7,14 @@ import CustomText from '../CustomText';
 import {useRoute} from '@react-navigation/native';
 import CreateModal from '../modal/createModal/CreateModal';
 
-const Header = ({type, title, onPressComplete, timer, folder}) => {
+const Header = ({
+  type,
+  title,
+  onPressComplete,
+  timer,
+  folder,
+  isTimerRunning,
+}) => {
   const navigation = useNavigation();
   const route = useRoute();
   const titleWeight = Platform.select({
@@ -45,10 +52,14 @@ const Header = ({type, title, onPressComplete, timer, folder}) => {
           </IconButton>
         </TouchableWithoutFeedback>
         <TitleText weight={titleWeight}>{title}</TitleText>
-        <RightTextButton
-          onPress={() => navigation.navigate('Timer Update', {timer})}>
-          <RightText>편집</RightText>
-        </RightTextButton>
+        {isTimerRunning ? (
+          <DisabledRightText>편집</DisabledRightText>
+        ) : (
+          <RightTextButton
+            onPress={() => navigation.navigate('Timer Update', {timer})}>
+            <RightText>편집</RightText>
+          </RightTextButton>
+        )}
       </HeaderContainer>
     );
   } else if (type === 'folder') {
@@ -94,6 +105,12 @@ const Header = ({type, title, onPressComplete, timer, folder}) => {
 };
 
 export default Header;
+
+const DisabledRightText = styled(Text)`
+  font-size: ${scale(15)}px;
+  padding: ${scale(10)}px;
+  color: #cccccc;
+`;
 
 const HeaderContainer = styled.View`
   flex-direction: row;
