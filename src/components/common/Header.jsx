@@ -116,6 +116,13 @@ const Header = ({
 
 export default Header;
 
+const DisabledRightText = styled(Text)`
+  font-size: ${scale(15)}px;
+  padding: ${scale(10)}px;
+  color: #777777;
+  opacity: 0.5;
+`;
+
 const HeaderContainer = styled.View`
   flex-direction: row;
   justify-content: space-between;
