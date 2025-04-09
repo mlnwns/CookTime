@@ -6,6 +6,7 @@ import {useNavigation} from '@react-navigation/native';
 import CustomText from '../CustomText';
 import {useRoute} from '@react-navigation/native';
 import CreateModal from '../modal/createModal/CreateModal';
+import {SafeAreaView} from 'react-native';
 
 const Header = ({
   type,
@@ -26,8 +27,59 @@ const Header = ({
   if (type === 'main') {
     return (
       <>
+        <SafeAreaView>
+          <HeaderContainer>
+            <Logo source={require('../../assets/images/header/logo.png')} />
+            <IconContainer>
+              <RightTextButton
+                onPress={() => bottomSheetRef.current?.present()}>
+                <IconButton>
+                  <StyledIcon
+                    source={require('../../assets/images/header/plus.png')}
+                  />
+                </IconButton>
+              </RightTextButton>
+            </IconContainer>
+          </HeaderContainer>
+          <CreateModal bottomSheetRef={bottomSheetRef} folder={folder} />
+        </SafeAreaView>
+      </>
+    );
+  } else if (type === 'detail') {
+    return (
+      <SafeAreaView>
         <HeaderContainer>
-          <Logo source={require('../../assets/images/header/logo.png')} />
+          <TouchableWithoutFeedback onPress={() => navigation.goBack()}>
+            <IconButton>
+              <BackButtonIcon
+                source={require('../../assets/images/header/back-icon.png')}
+              />
+            </IconButton>
+          </TouchableWithoutFeedback>
+          <TitleText weight={titleWeight}>{title}</TitleText>
+          {isTimerRunning ? (
+            <DisabledRightText>편집</DisabledRightText>
+          ) : (
+            <RightTextButton
+              onPress={() => navigation.navigate('Timer Update', {timer})}>
+              <RightText>편집</RightText>
+            </RightTextButton>
+          )}
+        </HeaderContainer>
+      </SafeAreaView>
+    );
+  } else if (type === 'folder') {
+    return (
+      <SafeAreaView>
+        <HeaderContainer>
+          <TouchableWithoutFeedback onPress={() => navigation.goBack()}>
+            <IconButton>
+              <BackButtonIcon
+                source={require('../../assets/images/header/back-icon.png')}
+              />
+            </IconButton>
+          </TouchableWithoutFeedback>
+          <TitleText weight={titleWeight}>{title}</TitleText>
           <IconContainer>
             <RightTextButton onPress={() => bottomSheetRef.current?.present()}>
               <IconButton>
@@ -37,9 +89,10 @@ const Header = ({
               </IconButton>
             </RightTextButton>
           </IconContainer>
+          <CreateModal bottomSheetRef={bottomSheetRef} folder={folder} />
         </HeaderContainer>
         <CreateModal bottomSheetRef={bottomSheetRef} folder={folder} />
-      </>
+      </SafeAreaView>
     );
   } else if (type === 'detail') {
     return (
@@ -64,60 +117,56 @@ const Header = ({
     );
   } else if (type === 'folder') {
     return (
-      <HeaderContainer>
-        <TouchableWithoutFeedback onPress={() => navigation.goBack()}>
-          <IconButton>
-            <BackButtonIcon
-              source={require('../../assets/images/header/back-icon.png')}
-            />
-          </IconButton>
-        </TouchableWithoutFeedback>
-        <TitleText weight={titleWeight}>{title}</TitleText>
-        <IconContainer>
-          <RightTextButton onPress={() => bottomSheetRef.current?.present()}>
+      <SafeAreaView>
+        <HeaderContainer>
+          <TouchableWithoutFeedback onPress={() => navigation.goBack()}>
             <IconButton>
-              <StyledIcon
-                source={require('../../assets/images/header/plus.png')}
+              <BackButtonIcon
+                source={require('../../assets/images/header/back-icon.png')}
               />
             </IconButton>
-          </RightTextButton>
-        </IconContainer>
-        <CreateModal bottomSheetRef={bottomSheetRef} folder={folder} />
-      </HeaderContainer>
+          </TouchableWithoutFeedback>
+          <TitleText weight={titleWeight}>{title}</TitleText>
+          <IconContainer>
+            <RightTextButton onPress={() => bottomSheetRef.current?.present()}>
+              <IconButton>
+                <StyledIcon
+                  source={require('../../assets/images/header/plus.png')}
+                />
+              </IconButton>
+            </RightTextButton>
+          </IconContainer>
+          <CreateModal bottomSheetRef={bottomSheetRef} folder={folder} />
+        </HeaderContainer>
+      </SafeAreaView>
     );
   } else if (['timerCreate', 'folderCreate'].includes(type)) {
     return (
-      <HeaderContainer>
-        <TouchableWithoutFeedback onPress={() => navigation.goBack()}>
-          <IconButton>
-            <BackButtonIcon
-              source={require('../../assets/images/header/back-icon.png')}
-            />
-          </IconButton>
-        </TouchableWithoutFeedback>
-        <TitleText weight={titleWeight}>{title}</TitleText>
-        <RightTextButton onPress={onPressComplete}>
-          <RightText>완료</RightText>
-        </RightTextButton>
-      </HeaderContainer>
+      <SafeAreaView>
+        <HeaderContainer>
+          <TouchableWithoutFeedback onPress={() => navigation.goBack()}>
+            <IconButton>
+              <BackButtonIcon
+                source={require('../../assets/images/header/back-icon.png')}
+              />
+            </IconButton>
+          </TouchableWithoutFeedback>
+          <TitleText weight={titleWeight}>{title}</TitleText>
+          <RightTextButton onPress={onPressComplete}>
+            <RightText>완료</RightText>
+          </RightTextButton>
+        </HeaderContainer>
+      </SafeAreaView>
     );
   }
 };
 
 export default Header;
 
-const DisabledRightText = styled(Text)`
-  font-size: ${scale(15)}px;
-  padding: ${scale(10)}px;
-  color: #cccccc;
-`;
-
 const HeaderContainer = styled.View`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  padding: ${scale(10)}px -${scale(10)}px 0 -${scale(10)}px;
-  margin-top: ${scale(25)}px;
   margin-bottom: ${scale(10)}px;
 `;
 
@@ -158,4 +207,10 @@ const RightText = styled(Text)`
 
 const RightTextButton = styled(TouchableWithoutFeedback)`
   background-color: red;
+`;
+
+const DisabledRightText = styled(Text)`
+  font-size: ${scale(15)}px;
+  padding: ${scale(10)}px;
+  color: #cccccc;
 `;
