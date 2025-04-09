@@ -109,6 +109,7 @@ const TimersContainer = styled.View`
   flex-wrap: wrap;
   justify-content: flex-start;
   padding-top: ${scale(20)}px;
+  padding-bottom: ${scale(30)}px;
 `;
 
 const TimerWrapper = styled.View``;
