@@ -135,7 +135,14 @@ const DetailPage = () => {
         <Animated.View style={animatedStyle}>
           <DetailTimerContainer>
             <HeaderWrapper>
-              <Header type="detail" title={timer.timerName} timer={timer} />
+              <HeaderWrapper>
+                <Header
+                  type="detail"
+                  title={timer.timerName}
+                  timer={timer}
+                  isTimerRunning={currentTimer?.isRunning}
+                />
+              </HeaderWrapper>
             </HeaderWrapper>
             <ContentContainer>
               <CircularProgress

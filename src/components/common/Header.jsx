@@ -14,7 +14,14 @@ import {useRoute} from '@react-navigation/native';
 import CreateModal from '../modal/createModal/CreateModal';
 import {SafeAreaView} from 'react-native';
 
-const Header = ({type, title, onPressComplete, timer, folder}) => {
+const Header = ({
+  type,
+  title,
+  onPressComplete,
+  timer,
+  folder,
+  isTimerRunning,
+}) => {
   const navigation = useNavigation();
   const titleWeight = Platform.select({
     ios: 'bold',
@@ -55,10 +62,14 @@ const Header = ({type, title, onPressComplete, timer, folder}) => {
             </IconButton>
           </TouchableWithoutFeedback>
           <TitleText weight={titleWeight}>{title}</TitleText>
-          <RightTextButton
-            onPress={() => navigation.navigate('Timer Update', {timer})}>
-            <RightText>편집</RightText>
-          </RightTextButton>
+          {isTimerRunning ? (
+            <DisabledRightText>편집</DisabledRightText>
+          ) : (
+            <RightTextButton
+              onPress={() => navigation.navigate('Timer Update', {timer})}>
+              <RightText>편집</RightText>
+            </RightTextButton>
+          )}
         </HeaderContainer>
       </SafeAreaView>
     );
@@ -132,6 +143,13 @@ const Header = ({type, title, onPressComplete, timer, folder}) => {
 };
 
 export default Header;
+
+const DisabledRightText = styled(Text)`
+  font-size: ${scale(15)}px;
+  padding: ${scale(10)}px;
+  color: #777777;
+  opacity: 0.5;
+`;
 
 const HeaderContainer = styled.View`
   height: ${scale(30)}px;
