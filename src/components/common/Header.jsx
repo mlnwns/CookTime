@@ -160,6 +160,7 @@ const HeaderContainer = styled.View`
   flex-direction: row;
   justify-content: ${props => props.justifyContent || 'space-between'};
   align-items: ${props => props.alignItems || 'center'};
+  margin-top: ${scale(20)}px;
   margin-bottom: ${scale(10)}px;
 `;
 
