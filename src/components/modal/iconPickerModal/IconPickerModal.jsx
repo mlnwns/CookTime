@@ -17,7 +17,6 @@ const IconPickerModal = ({bottomSheetRef, onSelectIcon}) => {
     <BottomSheetModal
       ref={bottomSheetRef}
       backgroundStyle={{backgroundColor: '#FFF'}}
-      // snapPoints={['50%', '50%']}
       maxDynamicContentSize={scale(400)}
       backdropComponent={props => (
         <Pressable
