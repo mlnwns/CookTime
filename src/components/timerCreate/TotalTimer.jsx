@@ -15,9 +15,9 @@ const TotalTimer = totalTime => {
 
 const TotalTimerContainer = styled.View`
   flex-direction: row;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  gap: ${scale(30)}px;
+  padding: 0 ${scale(5)}px;
 `;
 
 const TotalTimerText = styled(CustomText)`
