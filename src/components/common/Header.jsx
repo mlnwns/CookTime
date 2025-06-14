@@ -13,6 +13,8 @@ import CustomText from '../CustomText';
 import CreateModal from '../modal/createModal/CreateModal';
 import {SafeAreaView} from 'react-native';
 import useUiStore from '../../store/uiStore';
+import useTimerStore from '../../store';
+
 const Header = ({
   type,
   title,
@@ -22,12 +24,20 @@ const Header = ({
   isTimerRunning,
 }) => {
   const navigation = useNavigation();
+  const timerStore = useTimerStore();
   const titleWeight = Platform.select({
     ios: 'bold',
     android: 'medium',
   });
   const bottomSheetRef = useRef(null);
   const {isDeleteMode, setDeleteMode} = useUiStore();
+
+  const handleEditPress = () => {
+    if (timer && isTimerRunning) {
+      timerStore.stopTimer(timer.id);
+    }
+    navigation.navigate('Timer Update', {timer});
+  };
 
   if (type === 'main') {
     return (
@@ -66,14 +76,9 @@ const Header = ({
             </IconButton>
           </TouchableWithoutFeedback>
           <TitleText weight={titleWeight}>{title}</TitleText>
-          {isTimerRunning ? (
-            <DisabledRightText>편집</DisabledRightText>
-          ) : (
-            <RightTextButton
-              onPress={() => navigation.navigate('Timer Update', {timer})}>
-              <RightText>편집</RightText>
-            </RightTextButton>
-          )}
+          <RightTextButton onPress={handleEditPress}>
+            <RightText>편집</RightText>
+          </RightTextButton>
         </HeaderContainer>
       </SafeAreaView>
     );
@@ -196,7 +201,7 @@ const TitleText = styled(CustomText)`
 const RightText = styled(Text)`
   font-size: ${scale(15)}px;
   padding: ${scale(10)}px;
-  color: #777777;
+  color: #545454;
 `;
 
 const RightTextButton = styled(TouchableWithoutFeedback)`

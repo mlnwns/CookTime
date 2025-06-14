@@ -5,11 +5,24 @@ import useUiStore from '../../store/uiStore';
 import {useNavigation} from '@react-navigation/native';
 import useDeleteData from '../../hooks/useDeleteData';
 import {scale} from 'react-native-size-matters';
+import useTimerStore from '../../store';
 
 const TimerContextMenu = ({children, timer}) => {
   const navigation = useNavigation();
   const {setDeleteMode} = useUiStore();
   const {handleDeleteTimer} = useDeleteData();
+  const timerStore = useTimerStore();
+
+  const handleEditPress = () => {
+    const currentTimer = timerStore.timers[timer.id];
+    if (currentTimer && currentTimer.isRunning) {
+      timerStore.stopTimer(timer.id);
+    }
+
+    if (timer) {
+      navigation.navigate('Timer Update', {timer});
+    }
+  };
 
   return (
     <>
@@ -37,9 +50,7 @@ const TimerContextMenu = ({children, timer}) => {
           }}
           onPressMenuItem={async ({nativeEvent}) => {
             if (nativeEvent.actionKey === '0') {
-              if (timer) {
-                navigation.navigate('Timer Update', {timer});
-              }
+              handleEditPress();
             }
             if (nativeEvent.actionKey === '1') {
               await handleDeleteTimer(timer.id);
@@ -67,9 +78,7 @@ const TimerContextMenu = ({children, timer}) => {
           ]}
           onPress={async ({nativeEvent}) => {
             if (nativeEvent.index === 0) {
-              if (timer) {
-                navigation.navigate('Timer Update', {timer});
-              }
+              handleEditPress();
             }
             if (nativeEvent.index === 1) {
               await handleDeleteTimer(timer.id);

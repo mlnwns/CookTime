@@ -5,11 +5,27 @@ import useUiStore from '../../store/uiStore';
 import {useNavigation} from '@react-navigation/native';
 import useDeleteData from '../../hooks/useDeleteData';
 import {scale} from 'react-native-size-matters';
+import useTimerStore from '../../store';
 
 const FolderContextMenu = ({children, folder}) => {
   const navigation = useNavigation();
   const {setDeleteMode} = useUiStore();
   const {handleDeleteFolder} = useDeleteData();
+  const timerStore = useTimerStore();
+
+  const handleEditPress = () => {
+    Object.keys(timerStore.timers).forEach(timerId => {
+      const timer = timerStore.timers[timerId];
+      if (timer && timer.isRunning) {
+        timerStore.stopTimer(timerId);
+      }
+    });
+
+    if (folder) {
+      navigation.navigate('Folder Update', {folder});
+    }
+  };
+
   return (
     <>
       {Platform.OS === 'ios' ? (
@@ -36,9 +52,7 @@ const FolderContextMenu = ({children, folder}) => {
           }}
           onPressMenuItem={async ({nativeEvent}) => {
             if (nativeEvent.actionKey === '0') {
-              if (folder) {
-                navigation.navigate('Folder Update', {folder});
-              }
+              handleEditPress();
             }
             if (nativeEvent.actionKey === '1') {
               await handleDeleteFolder(folder.id);
@@ -68,9 +82,7 @@ const FolderContextMenu = ({children, folder}) => {
           ]}
           onPress={async ({nativeEvent}) => {
             if (nativeEvent.index === 0) {
-              if (folder) {
-                navigation.navigate('Folder Update', {folder});
-              }
+              handleEditPress();
             }
             if (nativeEvent.index === 1) {
               await handleDeleteFolder(folder.id);
