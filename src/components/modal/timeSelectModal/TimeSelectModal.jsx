@@ -1,4 +1,4 @@
-import React, {useState, useCallback} from 'react';
+import React, {useState, useCallback, useEffect} from 'react';
 import {scale} from 'react-native-size-matters';
 import styled from 'styled-components/native';
 import CustomText from '../../CustomText';
@@ -6,9 +6,19 @@ import {Picker} from 'react-native-wheel-pick';
 import {Pressable} from 'react-native';
 import {BottomSheetModal, BottomSheetView} from '@gorhom/bottom-sheet';
 
-const TimeSelectModal = ({bottomSheetRef, onHandleTimeSelect}) => {
+const TimeSelectModal = ({
+  bottomSheetRef,
+  onHandleTimeSelect,
+  initialMinutes = '00',
+  initialSeconds = '00',
+}) => {
   const [hour, setHour] = useState('00');
   const [minute, setMinute] = useState('00');
+
+  useEffect(() => {
+    setHour(initialMinutes);
+    setMinute(initialSeconds);
+  }, [initialMinutes, initialSeconds]);
 
   const generatePickerItems = (limit, step = 1) =>
     Array.from({length: Math.ceil(limit / step)}, (_, i) =>
@@ -47,7 +57,7 @@ const TimeSelectModal = ({bottomSheetRef, onHandleTimeSelect}) => {
             <Picker
               style={{
                 backgroundColor: 'white',
-                width: scale(100),
+                width: scale(150),
                 height: scale(200),
               }}
               selectedValue={hour}
@@ -60,7 +70,7 @@ const TimeSelectModal = ({bottomSheetRef, onHandleTimeSelect}) => {
             <Picker
               style={{
                 backgroundColor: 'white',
-                width: scale(100),
+                width: scale(150),
                 height: scale(200),
               }}
               selectedValue={minute}
