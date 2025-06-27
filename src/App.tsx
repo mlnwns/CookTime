@@ -16,8 +16,8 @@ import FolderPage from './pages/FolderPage';
 import {useAppStateMonitor} from './hooks/useAppStateMonitor';
 import FolderUpdatePage from './pages/FolderUpdatePage';
 import PushNotification from 'react-native-push-notification';
-
 import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
+
 const Stack = createNativeStackNavigator();
 
 function App(): React.JSX.Element {

@@ -20,14 +20,15 @@ const CountdownFolder = ({folder}) => {
 
   return (
     <CountdownFolderContainer>
-      <TopLeftSectionView color={lighterColor} />
-      <TopRightSectionView color={lighterColor} />
+      <TopSectionView color={lighterColor} />
+      <InnerSectionView />
       <BottomSectionWrapper color={folderColor}>
         <IconboxWrapper>
           <IconView>{icon}</IconView>
         </IconboxWrapper>
         <FoodTitleText weight="medium">{folderName}</FoodTitleText>
       </BottomSectionWrapper>
+      <BottomRightSectionView color={folderColor} />
     </CountdownFolderContainer>
   );
 };
@@ -39,23 +40,34 @@ const CountdownFolderContainer = styled.View`
   height: ${scale(134.7)}px;
 `;
 
-const TopLeftSectionView = styled.View`
+const TopSectionView = styled.View`
   position: absolute;
-  width: ${scale(70)}px;
+  width: ${scale(140)}px;
   height: ${scale(134.7)}px;
   background-color: ${props => props.color || '#FCC4C4'};
   border-radius: ${scale(15)}px;
   bottom: 0;
-  margin-left: ${scale(10)}px;
 `;
 
-const TopRightSectionView = styled.View`
+const InnerSectionView = styled.View`
   position: absolute;
-  width: ${scale(119)}px;
-  height: ${scale(126.5)}px;
+  width: ${scale(120)}px;
+  height: ${scale(122)}px;
+  background-color: #fff;
+  border-radius: ${scale(15)}px;
+  bottom: 0px;
+  left: 11px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+`;
+
+const BottomRightSectionView = styled.View`
+  position: absolute;
+  width: ${scale(70)}px;
+  height: ${scale(110)}px;
   background-color: ${props => props.color || '#FCC4C4'};
   border-radius: ${scale(15)}px;
   bottom: 0;
+  right: 0;
   margin-left: ${scale(12)}px;
 `;
 
@@ -63,7 +75,7 @@ const BottomSectionWrapper = styled.View`
   position: absolute;
   padding: ${scale(15)}px;
   width: ${scale(140)}px;
-  height: ${scale(113)}px;
+  height: ${scale(95)}px;
   background-color: ${props => props.color || '#F4A7A3'};
   border-radius: ${scale(15)}px;
   bottom: 0;
@@ -86,7 +98,7 @@ const FoodTitleText = styled(CustomText).attrs({
   numberOfLines: 1,
   ellipsizeMode: 'tail',
 })`
-  padding-top: ${scale(15)}px;
+  padding-top: ${scale(10)}px;
   opacity: 0.6;
   font-size: ${scale(16)}px;
   width: 100%;

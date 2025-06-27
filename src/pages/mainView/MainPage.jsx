@@ -177,19 +177,19 @@ const MainPage = ({width}) => {
 
   return (
     <MainContainer width={width}>
-      <HeaderWrapper>
-        <Header type="main" />
-      </HeaderWrapper>
-      {items.length === 0 ? (
-        <EmptyView>
-          <EmptyText>생성된 타이머가 없습니다.</EmptyText>
-        </EmptyView>
-      ) : (
-        <ScrollView
-          contentContainerStyle={{flexGrow: 1}}
-          showsVerticalScrollIndicator={false}>
+      <ScrollView
+        contentContainerStyle={{flexGrow: 1}}
+        showsVerticalScrollIndicator={false}>
+        <HeaderWrapper>
+          <Header type="main" />
+        </HeaderWrapper>
+
+        {items.length === 0 ? (
+          <EmptyView>
+            <EmptyText>생성된 타이머가 없습니다.</EmptyText>
+          </EmptyView>
+        ) : (
           <CountdownTimerWrapper
-            contentContainerStyle={{flexGrow: 1}}
             onPress={() => {
               isDeleteMode && setDeleteMode(false);
             }}>
@@ -206,8 +206,8 @@ const MainPage = ({width}) => {
               ))}
             </TimersAndFoldersContainer>
           </CountdownTimerWrapper>
-        </ScrollView>
-      )}
+        )}
+      </ScrollView>
     </MainContainer>
   );
 };
