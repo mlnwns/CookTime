@@ -4,15 +4,18 @@ import styled from 'styled-components/native';
 import {scale} from 'react-native-size-matters';
 import {ScrollView} from 'react-native';
 import Header from '../components/common/Header';
-import CountdownTimer from '../components/timer/CountdownTimer';
+import TimerView from '../components/timer/TimerView';
 import {useRoute, useNavigation} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import useUiStore from '../store/uiStore';
 
 const FolderPage = () => {
   const route = useRoute();
   const navigation = useNavigation();
   const {folder} = route.params || {};
   const [timers, setTimers] = useState([]);
+  const isDeleteMode = useUiStore(state => state.isDeleteMode);
+  const setDeleteMode = useUiStore(state => state.setDeleteMode);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -24,7 +27,11 @@ const FolderPage = () => {
             const folderTimers = parsedTimers.filter(
               timer => timer.folderId === folder.id,
             );
-            setTimers(folderTimers);
+            const timersWithType = folderTimers.map(timer => ({
+              ...timer,
+              type: 'timer',
+            }));
+            setTimers(timersWithType);
           } else {
             setTimers([]);
           }
@@ -54,11 +61,14 @@ const FolderPage = () => {
           updatedTimers.unshift(timer);
           await AsyncStorage.setItem('timers', JSON.stringify(updatedTimers));
 
-          // 현재 폴더의 타이머만 다시 불러옴
           const folderTimers = updatedTimers.filter(
             timer => timer.folderId === folder.id,
           );
-          setTimers(folderTimers);
+          const timersWithType = folderTimers.map(timer => ({
+            ...timer,
+            type: 'timer',
+          }));
+          setTimers(timersWithType);
         }
       }
     } catch (error) {
@@ -78,11 +88,19 @@ const FolderPage = () => {
       <ScrollView
         contentContainerStyle={{flexGrow: 1}}
         showsVerticalScrollIndicator={false}>
-        <TimersContainer>
+        <TimersContainer
+          onPress={() => {
+            isDeleteMode && setDeleteMode(false);
+          }}>
           {timers.length > 0 ? (
             timers.map((timer, index) => (
-              <TimerWrapper key={index}>
-                <CountdownTimer timer={timer} onTimerClick={handleTimerClick} />
+              <TimerWrapper key={timer.id}>
+                <TimerView
+                  item={timer}
+                  isFolder={false}
+                  onTimerClick={handleTimerClick}
+                  onFolderClick={() => {}}
+                />
               </TimerWrapper>
             ))
           ) : (
@@ -103,7 +121,7 @@ const FolderContainer = styled.View`
   height: 100%;
 `;
 
-const TimersContainer = styled.View`
+const TimersContainer = styled.Pressable`
   flex-direction: row;
   gap: ${scale(26)}px;
   flex-wrap: wrap;

@@ -89,6 +89,8 @@ const DetailTimer = ({
         bottomSheetRef={bottomSheetRef}
         onClose={handleModalClose}
         onHandleTimeSelect={handleTimeSelect}
+        initialMinutes={minutes}
+        initialSeconds={seconds}
       />
     </DetailTimerContainer>
   );
