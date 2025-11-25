@@ -152,8 +152,9 @@ const DetailPage = () => {
               />
               <CurrentFire fireData={getCurrentFireData()} />
               <TimerDisplay weight="semi-bold">
-                {String(currentTimer.time.minutes).padStart(2, '0')}:
-                {String(currentTimer.time.seconds).padStart(2, '0')}
+                {currentTimer
+                  ? `${String(currentTimer.time.minutes).padStart(2, '0')}:${String(currentTimer.time.seconds).padStart(2, '0')}`
+                  : '00:00'}
               </TimerDisplay>
               <ButtonContainer>
                 <TouchableWithoutFeedback onPress={handleReset}>
@@ -167,7 +168,7 @@ const DetailPage = () => {
                   <ButtonWrapper color={detailColor}>
                     <StartButtonImage
                       source={
-                        currentTimer.isRunning
+                        currentTimer?.isRunning
                           ? require('../assets/images/detail/stop-icon.png')
                           : require('../assets/images/detail/start-icon.png')
                       }

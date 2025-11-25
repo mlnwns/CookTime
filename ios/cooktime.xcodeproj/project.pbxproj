@@ -16,7 +16,6 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		1AEF42062D2FFC3600C73367 /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 1AEF42052D2FFC3600C73367 /* Config.xcconfig */; };
 		1AEF42072D2FFC3600C73367 /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 1AEF42052D2FFC3600C73367 /* Config.xcconfig */; };
-		2929FCC52D7E097B00DE4D37 /* silentSound.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 2929FCC42D7E097B00DE4D37 /* silentSound.mp3 */; };
 		2F57567F2D9446AFAEE7D9F7 /* Pretendard-SemiBold.otf in Resources */ = {isa = PBXBuildFile; fileRef = D747126915BD4FCB80063642 /* Pretendard-SemiBold.otf */; };
 		6BCF45A8AABB4AFCB04D3D4B /* Pretendard-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = C18A8E7E8DF44797B7BD7221 /* Pretendard-Bold.otf */; };
 		6DF05818F0BD464C9847B933 /* Pretendard-ExtraBold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7C8B93E2FF8B4756993FCD73 /* Pretendard-ExtraBold.otf */; };
@@ -66,7 +65,6 @@
 		13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = PrivacyInfo.xcprivacy; path = cooktime/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		19F6CBCC0A4E27FBF8BF4A61 /* libPods-cooktime-cooktimeTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-cooktime-cooktimeTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1AEF42052D2FFC3600C73367 /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
-		2929FCC42D7E097B00DE4D37 /* silentSound.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = silentSound.mp3; sourceTree = "<group>"; };
 		3B4392A12AC88292D35C810B /* Pods-cooktime.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-cooktime.debug.xcconfig"; path = "Target Support Files/Pods-cooktime/Pods-cooktime.debug.xcconfig"; sourceTree = "<group>"; };
 		3DF28ECD8A2948F28BE3F374 /* Pretendard-Black.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Pretendard-Black.otf"; path = "../src/assets/fonts/Pretendard-Black.otf"; sourceTree = "<group>"; };
 		5709B34CF0A7D63546082F79 /* Pods-cooktime.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-cooktime.release.xcconfig"; path = "Target Support Files/Pods-cooktime/Pods-cooktime.release.xcconfig"; sourceTree = "<group>"; };
@@ -186,7 +184,6 @@
 				B1090100C68247E18958F196 /* Pretendard-Regular.otf */,
 				D747126915BD4FCB80063642 /* Pretendard-SemiBold.otf */,
 				A40F47C4E2B649669E8BD795 /* Pretendard-Thin.otf */,
-				2929FCC42D7E097B00DE4D37 /* silentSound.mp3 */,
 				A68A77222DA1378400F95FAE /* cook_alarm.mp3 */,
 			);
 			name = Resources;
@@ -382,7 +379,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
-				2929FCC52D7E097B00DE4D37 /* silentSound.mp3 in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				BA98693EE4B42A08E15D8820 /* PrivacyInfo.xcprivacy in Resources */,
 				A68A77232DA1378400F95FAE /* cook_alarm.mp3 in Resources */,
@@ -761,7 +757,10 @@
 					"-DFOLLY_CFG_NO_COROUTINES=1",
 					"-DFOLLY_HAVE_CLOCK_GETTIME=1",
 				);
-				OTHER_LDFLAGS = "$(inherited)  ";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					" ",
+				);
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
@@ -831,7 +830,10 @@
 					"-DFOLLY_CFG_NO_COROUTINES=1",
 					"-DFOLLY_HAVE_CLOCK_GETTIME=1",
 				);
-				OTHER_LDFLAGS = "$(inherited)  ";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					" ",
+				);
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				USE_HERMES = true;

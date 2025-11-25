@@ -1,8 +1,8 @@
 import {create} from 'zustand';
+import {Platform} from 'react-native';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
 import PushNotification from 'react-native-push-notification';
-
-PushNotification.clo;
+import {calculateTotalSeconds, calculateCurrentStep} from './utils/timerUtils';
 
 const useTimerStore = create(set => ({
   timers: {},
@@ -75,6 +75,9 @@ const useTimerStore = create(set => ({
               minutes: parseInt(initialMinutes),
               seconds: parseInt(initialSeconds),
             },
+            startTime: null,
+            pausedAt: null,
+            pausedRemaining: null,
           },
         },
       };
@@ -86,127 +89,127 @@ const useTimerStore = create(set => ({
       const timer = state.timers[timerId];
       if (!timer || (timer.isRunning && timer.intervalId)) return state;
 
-      // 현재 상태를 저장
-      const currentState = {
-        time: {...timer.time},
-        remainingTotalSeconds: timer.remainingTotalSeconds,
-        currentStepIndex: timer.currentStepIndex,
-      };
+      const initialTotalSeconds = calculateTotalSeconds(timer.detailTimerData);
+
+      const now = Date.now();
+      const startTime = timer.pausedRemaining
+        ? now - (initialTotalSeconds - timer.pausedRemaining) * 1000
+        : now;
+
+      const elapsedBeforePause = timer.pausedRemaining
+        ? initialTotalSeconds - timer.pausedRemaining
+        : 0;
+
+      let accumulatedSeconds = 0;
+      timer.detailTimerData.forEach((step, index) => {
+        const stepDuration =
+          parseInt(step.minutes) * 60 + parseInt(step.seconds);
+        accumulatedSeconds += stepDuration;
+
+        if (accumulatedSeconds > elapsedBeforePause) {
+          const notificationTime = new Date(
+            startTime + accumulatedSeconds * 1000,
+          );
+
+          if (Platform.OS === 'ios') {
+            PushNotificationIOS.addNotificationRequest({
+              id: `timer-${timerId}-step-${index}`,
+              title: 'COOKTIME',
+              body: `${timer.timerName}의 ${
+                index + 1
+              }번째 타이머가 완료되었습니다!`,
+              fireDate: notificationTime,
+              sound: 'cook_alarm.mp3',
+            });
+          } else if (Platform.OS === 'android') {
+            PushNotification.localNotificationSchedule({
+              channelId: 'default',
+              id: `timer-${timerId}-step-${index}`,
+              title: 'COOKTIME',
+              message: `${timer.timerName}의 ${
+                index + 1
+              }번째 타이머가 완료되었습니다!`,
+              date: notificationTime,
+              soundName: 'default',
+              allowWhileIdle: true,
+            });
+          }
+        }
+      });
 
       const intervalId = setInterval(() => {
         set(state => {
           const currentTimer = state.timers[timerId];
-          if (!currentTimer) {
+          if (!currentTimer || !currentTimer.isRunning) {
             clearInterval(intervalId);
             return state;
           }
 
-          const {minutes, seconds} = currentTimer.time;
+          const initialTotalSeconds = calculateTotalSeconds(
+            currentTimer.detailTimerData,
+          );
+
+          const elapsed = Math.floor(
+            (Date.now() - currentTimer.startTime) / 1000,
+          );
           const newRemainingTotalSeconds = Math.max(
-            currentTimer.remainingTotalSeconds - 1,
+            initialTotalSeconds - elapsed,
             0,
           );
 
-          if (minutes === 0 && seconds === 0) {
-            if (Platform.OS === 'ios') {
-              PushNotificationIOS.addNotificationRequest({
-                id: `timerComplete-${timerId}`,
-                title: `COOKTIME`,
-                body: `${currentTimer.timerName}의 ${
-                  currentTimer.currentStepIndex + 1
-                }번째 타이머가 완료되었습니다!`,
-                sound: 'cook_alarm.mp3',
-              });
-            }
+          const {currentStepIndex, currentStepRemaining} = calculateCurrentStep(
+            currentTimer.detailTimerData,
+            elapsed,
+          );
 
-            if (Platform.OS === 'android') {
-              PushNotification.localNotification({
-                channelId: 'default',
-                title: 'COOKTIME',
-                message: `${currentTimer.timerName}의 ${
-                  currentTimer.currentStepIndex + 1
-                }번째 타이머가 완료되었습니다!`,
-                soundName: 'default',
-              });
-            }
+          if (newRemainingTotalSeconds === 0) {
+            clearInterval(intervalId);
 
-            if (
-              currentTimer.currentStepIndex <
-              currentTimer.detailTimerData.length - 1
-            ) {
-              const nextIndex = currentTimer.currentStepIndex + 1;
-              const nextStep = currentTimer.detailTimerData[nextIndex];
+            const initialTotalSeconds = calculateTotalSeconds(
+              currentTimer.detailTimerData,
+            );
 
-              return {
-                timers: {
-                  ...state.timers,
-                  [timerId]: {
-                    ...currentTimer,
-                    currentStepIndex: nextIndex,
-                    time: {
-                      minutes: parseInt(nextStep.minutes),
-                      seconds: parseInt(nextStep.seconds),
-                    },
-                    remainingTotalSeconds: newRemainingTotalSeconds,
-                    totalTime: {
-                      minutes: Math.floor(newRemainingTotalSeconds / 60),
-                      seconds: newRemainingTotalSeconds % 60,
-                    },
+            return {
+              timers: {
+                ...state.timers,
+                [timerId]: {
+                  ...currentTimer,
+                  isRunning: false,
+                  intervalId: null,
+                  currentStepIndex: 0,
+                  time: {
+                    minutes: parseInt(currentTimer.detailTimerData[0].minutes),
+                    seconds: parseInt(currentTimer.detailTimerData[0].seconds),
                   },
-                },
-              };
-            } else {
-              clearInterval(intervalId);
-              const initialTotalSeconds = currentTimer.detailTimerData.reduce(
-                (total, step) =>
-                  total +
-                  (parseInt(step.minutes) * 60 + parseInt(step.seconds)),
-                0,
-              );
-
-              return {
-                timers: {
-                  ...state.timers,
-                  [timerId]: {
-                    ...currentTimer,
-                    isRunning: false,
-                    intervalId: null,
-                    currentStepIndex: 0,
-                    time: {
-                      minutes: parseInt(
-                        currentTimer.detailTimerData[0].minutes,
-                      ),
-                      seconds: parseInt(
-                        currentTimer.detailTimerData[0].seconds,
-                      ),
-                    },
-                    remainingTotalSeconds: initialTotalSeconds,
-                    totalTime: {
-                      minutes: Math.floor(initialTotalSeconds / 60),
-                      seconds: initialTotalSeconds % 60,
-                    },
+                  remainingTotalSeconds: initialTotalSeconds,
+                  totalTime: {
+                    minutes: Math.floor(initialTotalSeconds / 60),
+                    seconds: initialTotalSeconds % 60,
                   },
+                  startTime: null,
+                  pausedAt: null,
+                  pausedRemaining: null,
                 },
-              };
-            }
+              },
+            };
           }
 
-          const newTime =
-            seconds === 0
-              ? {minutes: minutes - 1, seconds: 59}
-              : {minutes, seconds: seconds - 1};
+          const minutes = Math.floor(currentStepRemaining / 60);
+          const seconds = currentStepRemaining % 60;
 
           return {
             timers: {
               ...state.timers,
               [timerId]: {
                 ...currentTimer,
-                time: newTime,
+                currentStepIndex,
+                time: {minutes, seconds},
                 remainingTotalSeconds: newRemainingTotalSeconds,
                 totalTime: {
                   minutes: Math.floor(newRemainingTotalSeconds / 60),
                   seconds: newRemainingTotalSeconds % 60,
                 },
+                startTime: currentTimer.startTime,
               },
             },
           };
@@ -220,6 +223,9 @@ const useTimerStore = create(set => ({
             ...timer,
             isRunning: true,
             intervalId,
+            startTime,
+            pausedAt: null,
+            pausedRemaining: null,
           },
         },
       };
@@ -235,6 +241,18 @@ const useTimerStore = create(set => ({
         clearInterval(timer.intervalId);
       }
 
+      timer.detailTimerData.forEach((_, index) => {
+        if (Platform.OS === 'ios') {
+          PushNotificationIOS.removePendingNotificationRequests([
+            `timer-${timerId}-step-${index}`,
+          ]);
+        } else if (Platform.OS === 'android') {
+          PushNotification.cancelLocalNotification(
+            `timer-${timerId}-step-${index}`,
+          );
+        }
+      });
+
       // 현재 타이머의 상태를 유지하면서 실행만 중지
       return {
         timers: {
@@ -243,6 +261,8 @@ const useTimerStore = create(set => ({
             ...timer,
             isRunning: false,
             intervalId: null,
+            pausedAt: Date.now(),
+            pausedRemaining: timer.remainingTotalSeconds,
             time: timer.time,
             remainingTotalSeconds: timer.remainingTotalSeconds,
             currentStepIndex: timer.currentStepIndex,
@@ -257,6 +277,20 @@ const useTimerStore = create(set => ({
       const timer = state.timers[timerId];
       if (timer?.intervalId) {
         clearInterval(timer.intervalId);
+      }
+
+      if (timer?.detailTimerData) {
+        timer.detailTimerData.forEach((_, index) => {
+          if (Platform.OS === 'ios') {
+            PushNotificationIOS.removePendingNotificationRequests([
+              `timer-${timerId}-step-${index}`,
+            ]);
+          } else if (Platform.OS === 'android') {
+            PushNotification.cancelLocalNotification(
+              `timer-${timerId}-step-${index}`,
+            );
+          }
+        });
       }
 
       const firstStep = timer?.detailTimerData[0] || {
@@ -284,9 +318,78 @@ const useTimerStore = create(set => ({
               minutes: parseInt(initialMinutes),
               seconds: parseInt(initialSeconds),
             },
+            startTime: null,
+            pausedAt: null,
+            pausedRemaining: null,
           },
         },
       };
+    });
+  },
+
+  syncAllTimers: () => {
+    set(state => {
+      const updatedTimers = {...state.timers};
+
+      Object.keys(updatedTimers).forEach(timerId => {
+        const timer = updatedTimers[timerId];
+
+        if (timer.isRunning && timer.startTime) {
+          const initialTotalSeconds = calculateTotalSeconds(
+            timer.detailTimerData,
+          );
+
+          const elapsed = Math.floor((Date.now() - timer.startTime) / 1000);
+          const newRemainingTotalSeconds = Math.max(
+            initialTotalSeconds - elapsed,
+            0,
+          );
+
+          if (newRemainingTotalSeconds === 0) {
+            if (timer.intervalId) {
+              clearInterval(timer.intervalId);
+            }
+
+            updatedTimers[timerId] = {
+              ...timer,
+              isRunning: false,
+              intervalId: null,
+              currentStepIndex: 0,
+              time: {
+                minutes: parseInt(timer.detailTimerData[0].minutes),
+                seconds: parseInt(timer.detailTimerData[0].seconds),
+              },
+              remainingTotalSeconds: initialTotalSeconds,
+              totalTime: {
+                minutes: Math.floor(initialTotalSeconds / 60),
+                seconds: initialTotalSeconds % 60,
+              },
+              startTime: null,
+              pausedAt: null,
+              pausedRemaining: null,
+            };
+          } else {
+            const {currentStepIndex, currentStepRemaining} =
+              calculateCurrentStep(timer.detailTimerData, elapsed);
+
+            updatedTimers[timerId] = {
+              ...timer,
+              currentStepIndex,
+              time: {
+                minutes: Math.floor(currentStepRemaining / 60),
+                seconds: currentStepRemaining % 60,
+              },
+              remainingTotalSeconds: newRemainingTotalSeconds,
+              totalTime: {
+                minutes: Math.floor(newRemainingTotalSeconds / 60),
+                seconds: newRemainingTotalSeconds % 60,
+              },
+            };
+          }
+        }
+      });
+
+      return {timers: updatedTimers};
     });
   },
 }));
