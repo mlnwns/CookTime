@@ -2,7 +2,11 @@ import {create} from 'zustand';
 import {Platform} from 'react-native';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
 import PushNotification from 'react-native-push-notification';
-import {calculateTotalSeconds, calculateCurrentStep} from './utils/timerUtils';
+import {
+  calculateTotalSeconds,
+  calculateCurrentStep,
+  createTimerIntervalCallback,
+} from './utils/timerUtils';
 
 const useTimerStore = create(set => ({
   timers: {},
@@ -137,84 +141,9 @@ const useTimerStore = create(set => ({
         }
       });
 
-      const intervalId = setInterval(() => {
-        set(state => {
-          const currentTimer = state.timers[timerId];
-          if (!currentTimer || !currentTimer.isRunning) {
-            clearInterval(intervalId);
-            return state;
-          }
-
-          const initialTotalSeconds = calculateTotalSeconds(
-            currentTimer.detailTimerData,
-          );
-
-          const elapsed = Math.floor(
-            (Date.now() - currentTimer.startTime) / 1000,
-          );
-          const newRemainingTotalSeconds = Math.max(
-            initialTotalSeconds - elapsed,
-            0,
-          );
-
-          const {currentStepIndex, currentStepRemaining} = calculateCurrentStep(
-            currentTimer.detailTimerData,
-            elapsed,
-          );
-
-          if (newRemainingTotalSeconds === 0) {
-            clearInterval(intervalId);
-
-            const initialTotalSeconds = calculateTotalSeconds(
-              currentTimer.detailTimerData,
-            );
-
-            return {
-              timers: {
-                ...state.timers,
-                [timerId]: {
-                  ...currentTimer,
-                  isRunning: false,
-                  intervalId: null,
-                  currentStepIndex: 0,
-                  time: {
-                    minutes: parseInt(currentTimer.detailTimerData[0].minutes),
-                    seconds: parseInt(currentTimer.detailTimerData[0].seconds),
-                  },
-                  remainingTotalSeconds: initialTotalSeconds,
-                  totalTime: {
-                    minutes: Math.floor(initialTotalSeconds / 60),
-                    seconds: initialTotalSeconds % 60,
-                  },
-                  startTime: null,
-                  pausedAt: null,
-                  pausedRemaining: null,
-                },
-              },
-            };
-          }
-
-          const minutes = Math.floor(currentStepRemaining / 60);
-          const seconds = currentStepRemaining % 60;
-
-          return {
-            timers: {
-              ...state.timers,
-              [timerId]: {
-                ...currentTimer,
-                currentStepIndex,
-                time: {minutes, seconds},
-                remainingTotalSeconds: newRemainingTotalSeconds,
-                totalTime: {
-                  minutes: Math.floor(newRemainingTotalSeconds / 60),
-                  seconds: newRemainingTotalSeconds % 60,
-                },
-                startTime: currentTimer.startTime,
-              },
-            },
-          };
-        });
-      }, 1000);
+      let intervalId;
+      const intervalCallback = createTimerIntervalCallback(timerId, () => intervalId, set);
+      intervalId = setInterval(intervalCallback, 1000);
 
       return {
         timers: {
@@ -386,6 +315,48 @@ const useTimerStore = create(set => ({
               },
             };
           }
+        }
+      });
+
+      return {timers: updatedTimers};
+    });
+  },
+
+  restartIntervals: () => {
+    set(state => {
+      const updatedTimers = {...state.timers};
+
+      Object.keys(updatedTimers).forEach(timerId => {
+        const timer = updatedTimers[timerId];
+
+        if (timer.isRunning && timer.startTime && !timer.intervalId) {
+          let intervalId;
+          const intervalCallback = createTimerIntervalCallback(timerId, () => intervalId, set);
+          intervalId = setInterval(intervalCallback, 1000);
+
+          updatedTimers[timerId] = {
+            ...timer,
+            intervalId,
+          };
+        }
+      });
+
+      return {timers: updatedTimers};
+    });
+  },
+
+  clearAllIntervals: () => {
+    set(state => {
+      const updatedTimers = {...state.timers};
+
+      Object.keys(updatedTimers).forEach(timerId => {
+        const timer = updatedTimers[timerId];
+        if (timer.intervalId) {
+          clearInterval(timer.intervalId);
+          updatedTimers[timerId] = {
+            ...timer,
+            intervalId: null,
+          };
         }
       });
 
