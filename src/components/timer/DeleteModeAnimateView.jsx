@@ -45,11 +45,12 @@ const DeleteModeAnimateView = ({children}) => {
   const animatedStyle = useAnimatedStyle(() => {
     return {
       transform: [{rotate: `${rotation.value}deg`}],
+      overflow: 'visible',
     };
   });
 
   return (
-    <Animated.View style={[{zIndex: 1}, animatedStyle]}>
+    <Animated.View style={[{zIndex: 999, overflow: 'visible'}, animatedStyle]}>
       {children}
     </Animated.View>
   );

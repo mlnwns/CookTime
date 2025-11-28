@@ -178,8 +178,9 @@ const MainPage = ({width}) => {
   return (
     <MainContainer width={width}>
       <ScrollView
-        contentContainerStyle={{flexGrow: 1}}
-        showsVerticalScrollIndicator={false}>
+        contentContainerStyle={{flexGrow: 1, overflow: 'visible'}}
+        showsVerticalScrollIndicator={false}
+        style={{overflow: 'visible'}}>
         <HeaderWrapper>
           <Header type="main" />
         </HeaderWrapper>
@@ -225,6 +226,7 @@ const CountdownTimerWrapper = styled.Pressable`
   margin: 0 ${scale(21)}px;
   height: 100%;
   width: 100%;
+  overflow: visible;
 `;
 
 const TimersAndFoldersContainer = styled.View`
@@ -234,6 +236,7 @@ const TimersAndFoldersContainer = styled.View`
   justify-content: flex-start;
   padding-top: ${scale(20)}px;
   padding-bottom: ${scale(30)}px;
+  overflow: visible;
 `;
 
 const HeaderWrapper = styled.View`

@@ -5,18 +5,8 @@ import {Platform, Pressable, Alert} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import useTimerStore from '../../store';
 import {useEffect} from 'react';
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  withTiming,
-  Easing,
-  withRepeat,
-  withSequence,
-  cancelAnimation,
-} from 'react-native-reanimated';
-import DeleteButton from '../common/DeleteButton';
+
 import useUiStore from '../../store/uiStore';
-import ContextMenu from 'react-native-context-menu-view';
 import useDeleteData from '../../hooks/useDeleteData';
 const DetailColor = color => {
   if (color === '#FBDF60') return '#FFC15B';
@@ -77,8 +67,6 @@ const CountdownTimer = ({timer, onTimerClick}) => {
           right: 0,
           width: `${progress * 100}%`,
           height: '100%',
-          borderTopRightRadius: scale(13),
-          borderBottomRightRadius: scale(13),
         }}
       />
       <ContentWrapper>

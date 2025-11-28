@@ -86,8 +86,9 @@ const FolderPage = () => {
         folder={folder}
       />
       <ScrollView
-        contentContainerStyle={{flexGrow: 1}}
-        showsVerticalScrollIndicator={false}>
+        contentContainerStyle={{flexGrow: 1, overflow: 'visible'}}
+        showsVerticalScrollIndicator={false}
+        style={{overflow: 'visible'}}>
         <TimersContainer
           onPress={() => {
             isDeleteMode && setDeleteMode(false);
@@ -128,9 +129,14 @@ const TimersContainer = styled.Pressable`
   justify-content: flex-start;
   padding-top: ${scale(20)}px;
   padding-bottom: ${scale(30)}px;
+  overflow: visible;
 `;
 
-const TimerWrapper = styled.View``;
+const TimerWrapper = styled.View`
+  z-index: 999;
+  elevation: 999;
+  overflow: visible;
+`;
 
 const EmptyView = styled.View`
   flex: 1;
